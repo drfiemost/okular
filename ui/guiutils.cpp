@@ -36,7 +36,7 @@ struct GuiUtilsHelper
     QSvgRenderer* svgStamps();
 
     QList<KIconLoader *> il;
-    std::auto_ptr< QSvgRenderer > svgStampFile;
+    std::unique_ptr< QSvgRenderer > svgStampFile;
 };
 
 QSvgRenderer* GuiUtilsHelper::svgStamps()
