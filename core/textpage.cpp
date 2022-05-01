@@ -133,14 +133,14 @@ class TinyTextEntity
 #if QT_POINTER_SIZE >= 8
                 case 4:
                     d.qc[3] = text.at( 3 ).unicode();
-                    // fall through
+                    [[fallthrough]];
                 case 3:
                     d.qc[2] = text.at( 2 ).unicode();
-                    // fall through
+                    [[fallthrough]];
 #endif
                 case 2:
                     d.qc[1] = text.at( 1 ).unicode();
-                    // fall through
+                    [[fallthrough]];
                 case 1:
                     d.qc[0] = text.at( 0 ).unicode();
                     break;
