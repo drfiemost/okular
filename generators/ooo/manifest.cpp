@@ -229,7 +229,9 @@ bool Manifest::testIfEncrypted( const QString &filename )
   return false;
 }
 
-void Manifest::checkPassword( ManifestEntry *entry, const QByteArray &fileData, QByteArray *decryptedData )
+void Manifest::checkPassword( [[maybe_unused]] ManifestEntry *entry,
+                              [[maybe_unused]] const QByteArray &fileData,
+                              [[maybe_unused]] QByteArray *decryptedData )
 {
 #ifdef QCA2
   QCA::SymmetricKey key = QCA::PBKDF2( "sha1" ).makeKey( QCA::Hash( "sha1" ).hash( m_password.toLocal8Bit() ),
@@ -264,7 +266,8 @@ void Manifest::checkPassword( ManifestEntry *entry, const QByteArray &fileData, 
 #endif
 }
 
-QByteArray Manifest::decryptFile( const QString &filename, const QByteArray &fileData )
+QByteArray Manifest::decryptFile( [[maybe_unused]] const QString &filename,
+                                  [[maybe_unused]] const QByteArray &fileData )
 {
 #ifdef QCA2
   ManifestEntry *entry = entryByName( filename );

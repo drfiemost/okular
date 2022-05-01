@@ -926,7 +926,7 @@ KUrl Part::realUrl() const
 
 // ViewerInterface
 
-void Part::showSourceLocation(const QString& fileName, int line, int column, bool showGraphically)
+void Part::showSourceLocation(const QString& fileName, int line, int, bool showGraphically)
 {
     const QString u = QString( "src:%1 %2" ).arg( line + 1 ).arg( fileName );
     GotoAction action( QString(), u );

@@ -164,7 +164,7 @@ void SearchLineEdit::findPrev()
         startSearch();
 }
 
-void SearchLineEdit::slotTextChanged( const QString & text )
+void SearchLineEdit::slotTextChanged( const QString & )
 {
     prepareLineEditForSearch();
     restartSearch();
@@ -189,7 +189,7 @@ void SearchLineEdit::prepareLineEditForSearch()
     setPalette( pal );
 }
 
-void SearchLineEdit::slotReturnPressed( const QString &text )
+void SearchLineEdit::slotReturnPressed( const QString & )
 {
     m_inputDelayTimer->stop();
     prepareLineEditForSearch();

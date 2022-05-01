@@ -2150,7 +2150,7 @@ Okular::TextPage* XpsGenerator::textPage( Okular::Page * page )
     return xpsPage->textPage();
 }
 
-Okular::DocumentInfo XpsGenerator::generateDocumentInfo( const QSet<Okular::DocumentInfo::Key> &keys ) const
+Okular::DocumentInfo XpsGenerator::generateDocumentInfo( const QSet<Okular::DocumentInfo::Key> & ) const
 {
     kDebug(XpsDebug) << "generating document metadata";
 

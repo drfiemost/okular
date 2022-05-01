@@ -495,7 +495,7 @@ void FormLineEdit::slotChanged()
     }
 }
 
-void FormLineEdit::slotHandleTextChangedByUndoRedo( int pageNumber,
+void FormLineEdit::slotHandleTextChangedByUndoRedo( int,
                                                     Okular::FormFieldText* textForm,
                                                     const QString & contents,
                                                     int cursorPos,
@@ -588,7 +588,7 @@ void TextAreaEdit::setFormWidgetsController( FormWidgetsController* controller )
              this, SLOT( slotHandleTextChangedByUndoRedo( int, Okular::FormFieldText*, QString, int, int ) ) );
 }
 
-void TextAreaEdit::slotHandleTextChangedByUndoRedo( int pageNumber,
+void TextAreaEdit::slotHandleTextChangedByUndoRedo( int,
                                                     Okular::FormFieldText* textForm,
                                                     const QString & contents,
                                                     int cursorPos,
@@ -733,7 +733,7 @@ void FileEdit::slotChanged()
     }
 }
 
-void FileEdit::slotHandleFileChangedByUndoRedo( int pageNumber,
+void FileEdit::slotHandleFileChangedByUndoRedo( int,
                                                 Okular::FormFieldText* form,
                                                 const QString & contents,
                                                 int cursorPos,
@@ -805,7 +805,7 @@ void ListEdit::slotSelectionChanged()
     }
 }
 
-void ListEdit::slotHandleFormListChangedByUndoRedo( int pageNumber,
+void ListEdit::slotHandleFormListChangedByUndoRedo( int,
                                                     Okular::FormFieldChoice* listForm,
                                                     const QList< int > & choices )
 {
@@ -896,7 +896,7 @@ void ComboEdit::slotValueChanged()
     }
 }
 
-void ComboEdit::slotHandleFormComboChangedByUndoRedo( int pageNumber,
+void ComboEdit::slotHandleFormComboChangedByUndoRedo( int,
                                                       Okular::FormFieldChoice* form,
                                                       const QString & text,
                                                       int cursorPos,

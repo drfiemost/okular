@@ -176,7 +176,7 @@ Generator::~Generator()
     delete d_ptr;
 }
 
-bool Generator::loadDocument( const QString & fileName, QVector< Page * > & pagesVector )
+bool Generator::loadDocument( const QString &, QVector< Page * > & )
 {
     return false;
 }
@@ -287,17 +287,17 @@ QImage Generator::image( PixmapRequest *request )
 
 TextPage* Generator::textPage( Page* )
 {
-    return 0;
+    return nullptr;
 }
 
-DocumentInfo Generator::generateDocumentInfo(const QSet<DocumentInfo::Key> &keys) const
+DocumentInfo Generator::generateDocumentInfo(const QSet<DocumentInfo::Key> &) const
 {
     return DocumentInfo();
 }
 
 const DocumentSynopsis * Generator::generateDocumentSynopsis()
 {
-    return 0;
+    return nullptr;
 }
 
 FontInfo::List Generator::fontsForPage( int )
