@@ -63,6 +63,8 @@ class OKULAR_EXPORT NormalizedPoint
          */
         NormalizedPoint( int x, int y, int xScale, int yScale );
 
+        NormalizedPoint(const NormalizedPoint&) = default;
+
         /**
          * @internal
          */
