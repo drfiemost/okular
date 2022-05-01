@@ -167,7 +167,7 @@ class OKULAR_PART_EXPORT Part : public KParts::ReadWritePart, public Okular::Doc
         bool openFile();
         bool openUrl(const KUrl &url);
         void guiActivateEvent(KParts::GUIActivateEvent *event);
-        void displayInfoMessage( const QString &message, KMessageWidget::MessageType messageType = KMessageWidget::Information, int duration = -1 );;
+        void displayInfoMessage( const QString &message, KMessageWidget::MessageType messageType = KMessageWidget::Information, int duration = -1 );
     public:
         bool saveFile();
         bool queryClose();
