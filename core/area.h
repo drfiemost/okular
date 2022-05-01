@@ -849,9 +849,6 @@ QList<Shape> RegularArea<NormalizedShape, Shape>::geometry( int xScale, int ySca
 template <class NormalizedShape, class Shape>
 void RegularArea<NormalizedShape, Shape>::transform( const QTransform &matrix )
 {
-    if ( !this )
-        return;
-
     if ( this->isEmpty() )
         return;
 
