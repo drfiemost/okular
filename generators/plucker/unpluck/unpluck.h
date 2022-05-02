@@ -363,10 +363,10 @@ int plkr_ShowMessages (
    If "section_name" is NULL, the default section ("default") is used.  Section
    names and option names should be all lowercase.
 */
-char *plkr_GetConfigString (
-    char *section_name,
-    char *option_name,
-    char *default_value
+const char *plkr_GetConfigString (
+    const char *section_name,
+    const char *option_name,
+    const char *default_value
 );
 
 
@@ -378,8 +378,8 @@ char *plkr_GetConfigString (
    names and option names should be all lowercase.
 */
 long int plkr_GetConfigInt (
-    char *section_name,
-    char *option_name,
+    const char *section_name,
+    const char *option_name,
     long int default_value
 );
 

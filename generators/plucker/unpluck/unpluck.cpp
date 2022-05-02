@@ -804,7 +804,7 @@ plkr_Document* plkr_OpenDoc
         /* we need to set up the owner-id key before uncompressing
            any records... */
 
-        char *owner_id = plkr_GetConfigString (NULL, "owner_id", NULL);
+        const char *owner_id = plkr_GetConfigString (NULL, "owner_id", NULL);
 
         if (owner_id != NULL) {
             unsigned long crc;
