@@ -105,10 +105,10 @@ static QDateTime convertTIFFDateTime( const char* tiffdate )
     return QDateTime::fromString( QString::fromLatin1( tiffdate ), "yyyy:MM:dd HH:mm:ss" );
 }
 
-static void adaptSizeToResolution( TIFF *tiff, ttag_t whichres, double dpi, uint32 *size )
+static void adaptSizeToResolution( TIFF *tiff, ttag_t whichres, double dpi, uint32_t *size )
 {
     float resvalue = 1.0;
-    uint16 resunit = 0;
+    uint16_t resunit = 0;
     if ( !TIFFGetField( tiff, whichres, &resvalue )
          || !TIFFGetFieldDefaulted( tiff, TIFFTAG_RESOLUTIONUNIT, &resunit ) )
         return;
@@ -117,10 +117,10 @@ static void adaptSizeToResolution( TIFF *tiff, ttag_t whichres, double dpi, uint
     switch ( resunit )
     {
         case RESUNIT_INCH:
-            *size = (uint32)( newsize * dpi );
+            *size = (uint32_t)( newsize * dpi );
             break;
         case RESUNIT_CENTIMETER:
-            *size = (uint32)( newsize * 10.0 / 25.4 * dpi );
+            *size = (uint32_t)( newsize * 10.0 / 25.4 * dpi );
             break;
         case RESUNIT_NONE:
             break;
@@ -129,7 +129,7 @@ static void adaptSizeToResolution( TIFF *tiff, ttag_t whichres, double dpi, uint
 
 static Okular::Rotation readTiffRotation( TIFF *tiff )
 {
-    uint32 tiffOrientation = 0;
+    uint32_t tiffOrientation = 0;
 
     if ( !TIFFGetField( tiff, TIFFTAG_ORIENTATION, &tiffOrientation ) )
         return Okular::Rotation0;
@@ -258,9 +258,9 @@ QImage TIFFGenerator::image( Okular::PixmapRequest * request )
     if ( TIFFSetDirectory( d->tiff, mapPage( request->page()->number() ) ) )
     {
         int rotation = request->page()->rotation();
-        uint32 width = 1;
-        uint32 height = 1;
-        uint32 orientation = 0;
+        uint32_t width = 1;
+        uint32_t height = 1;
+        uint32_t orientation = 0;
         TIFFGetField( d->tiff, TIFFTAG_IMAGEWIDTH, &width );
         TIFFGetField( d->tiff, TIFFTAG_IMAGELENGTH, &height );
 
@@ -268,17 +268,17 @@ QImage TIFFGenerator::image( Okular::PixmapRequest * request )
             orientation = ORIENTATION_TOPLEFT;
 
         QImage image( width, height, QImage::Format_RGB32 );
-        uint32 * data = (uint32 *)image.bits();
+        uint32_t * data = (uint32_t *)image.bits();
 
         // read data
         if ( TIFFReadRGBAImageOriented( d->tiff, width, height, data, orientation ) != 0 )
         {
             // an image read by ReadRGBAImage is ABGR, we need ARGB, so swap red and blue
-            uint32 size = width * height;
-            for ( uint32 i = 0; i < size; ++i )
+            uint32_t size = width * height;
+            for ( uint32_t i = 0; i < size; ++i )
             {
-                uint32 red = ( data[i] & 0x00FF0000 ) >> 16;
-                uint32 blue = ( data[i] & 0x000000FF ) << 16;
+                uint32_t red = ( data[i] & 0x00FF0000 ) >> 16;
+                uint32_t blue = ( data[i] & 0x000000FF ) << 16;
                 data[i] = ( data[i] & 0xFF00FF00 ) + red + blue;
             }
 
@@ -358,8 +358,8 @@ void TIFFGenerator::loadPages( QVector<Okular::Page*> & pagesVector )
     pagesVector.resize( dirs );
     tdir_t realdirs = 0;
 
-    uint32 width = 0;
-    uint32 height = 0;
+    uint32_t width = 0;
+    uint32_t height = 0;
 
     const double dpiX = Okular::Utils::dpiX();
     const double dpiY = Okular::Utils::dpiY();
@@ -389,8 +389,8 @@ void TIFFGenerator::loadPages( QVector<Okular::Page*> & pagesVector )
 
 bool TIFFGenerator::print( QPrinter& printer )
 {
-    uint32 width = 0;
-    uint32 height = 0;
+    uint32_t width = 0;
+    uint32_t height = 0;
 
     QPainter p( &printer );
 
@@ -408,17 +408,17 @@ bool TIFFGenerator::print( QPrinter& printer )
             continue;
 
         QImage image( width, height, QImage::Format_RGB32 );
-        uint32 * data = (uint32 *)image.bits();
+        uint32_t * data = (uint32_t *)image.bits();
 
         // read data
         if ( TIFFReadRGBAImageOriented( d->tiff, width, height, data, ORIENTATION_TOPLEFT ) != 0 )
         {
             // an image read by ReadRGBAImage is ABGR, we need ARGB, so swap red and blue
-            uint32 size = width * height;
-            for ( uint32 i = 0; i < size; ++i )
+            uint32_t size = width * height;
+            for ( uint32_t i = 0; i < size; ++i )
             {
-                uint32 red = ( data[i] & 0x00FF0000 ) >> 16;
-                uint32 blue = ( data[i] & 0x000000FF ) << 16;
+                uint32_t red = ( data[i] & 0x00FF0000 ) >> 16;
+                uint32_t blue = ( data[i] & 0x000000FF ) << 16;
                 data[i] = ( data[i] & 0xFF00FF00 ) + red + blue;
             }
         }
