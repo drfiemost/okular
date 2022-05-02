@@ -404,6 +404,7 @@ bool VideoWidget::eventFilter( QObject * object, QEvent * event )
                     }
                     event->accept();
                 }
+                break;
             }
             case QEvent::Wheel:
             {
@@ -417,7 +418,8 @@ bool VideoWidget::eventFilter( QObject * object, QEvent * event )
                 }
                 break;
             }
-            default: ;
+            default:
+                break;
         }
     }
 

@@ -344,13 +344,13 @@ Okular::Annotation* createAnnotationFromPopplerAnnotation( Poppler::Annotation *
         case Poppler::Annotation::ACaret:
         {
             externallyDrawn = true;
-            /* fallback */
+            [[fallthrough]];
         }
         case Poppler::Annotation::AStamp:
         {
             tieToOkularAnn = true;
             *doDelete = false;
-            /* fallback */
+            [[fallthrough]];
         }
 #endif
         default:

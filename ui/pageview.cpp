@@ -1786,7 +1786,7 @@ void PageView::keyPressEvent( QKeyEvent * e )
                     slotAutoScoll();
                 return;
             }
-            // else fall trhough
+            [[fallthrough]];
         default:
             e->ignore();
             return;

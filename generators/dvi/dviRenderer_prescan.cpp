@@ -711,6 +711,7 @@ void dviRenderer::prescan(parseSpecials specialParser)
     case W4:
       WWtmp = readINT(ch - W0);
       currinf.data.w = ((long) (WWtmp *  65536.0*fontPixelPerDVIunit));
+      [[fallthrough]];
     case W0:
       currinf.data.dvi_h += currinf.data.w;
       break;
@@ -721,6 +722,7 @@ void dviRenderer::prescan(parseSpecials specialParser)
     case X4:
       XXtmp = readINT(ch - X0);
       currinf.data.x = ((long) (XXtmp *  65536.0*fontPixelPerDVIunit));
+      [[fallthrough]];
     case X0:
       currinf.data.dvi_h += currinf.data.x;
       break;
@@ -742,6 +744,7 @@ void dviRenderer::prescan(parseSpecials specialParser)
     case Y4:
       YYtmp = readINT(ch - Y0);
       currinf.data.y    = ((long) (YYtmp *  65536.0*fontPixelPerDVIunit));
+      [[fallthrough]];
     case Y0:
       currinf.data.dvi_v += currinf.data.y/65536;
       currinf.data.pxl_v = int(currinf.data.dvi_v/shrinkfactor);
@@ -753,6 +756,7 @@ void dviRenderer::prescan(parseSpecials specialParser)
     case Z4:
       ZZtmp = readINT(ch - Z0);
       currinf.data.z    = ((long) (ZZtmp *  65536.0*fontPixelPerDVIunit));
+      [[fallthrough]];
     case Z0:
       currinf.data.dvi_v += currinf.data.z/65536;
       currinf.data.pxl_v  = int(currinf.data.dvi_v/shrinkfactor);
