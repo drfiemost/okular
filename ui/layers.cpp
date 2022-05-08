@@ -79,4 +79,4 @@ void Layers::saveSearchOptions()
     Okular::Settings::self()->writeConfig();
 }
 
- #include "layers.moc"
+ #include "moc_layers.cpp"

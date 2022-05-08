@@ -59,6 +59,8 @@ else(NOT WIN32)
  set(MATH_LIB)
 endif(NOT WIN32)
 
+set(CMAKE_AUTOMOC ON)
+
 # okularcore
 
 set(okularcore_SRCS

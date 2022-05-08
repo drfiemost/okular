@@ -814,4 +814,4 @@ void Sidebar::dropEvent( QDropEvent* event )
     emit urlsDropped( list );
 }
 
-#include "sidebar.moc"
+#include "moc_sidebar.cpp"

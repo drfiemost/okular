@@ -192,4 +192,4 @@ void MagnifierView::drawTicks( QPainter *p )
   p->restore();
 }
 
-#include "magnifierview.moc"
+#include "moc_magnifierview.cpp"

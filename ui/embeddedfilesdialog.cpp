@@ -186,4 +186,4 @@ void EmbeddedFilesDialog::saveFile( Okular::EmbeddedFile* ef )
     GuiUtils::saveEmbeddedFile( ef, this );
 }
 
-#include "embeddedfilesdialog.moc"
+#include "moc_embeddedfilesdialog.cpp"
