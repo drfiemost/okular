@@ -35,7 +35,7 @@ kde4_add_kcfg_files(okularGenerator_poppler_PART_SRCS conf/pdfsettings.kcfgc )
 
 kde4_add_plugin(okularGenerator_poppler ${okularGenerator_poppler_PART_SRCS})
 
-target_link_libraries(okularGenerator_poppler ${POPPLER_LIBRARY} okularcore ${KDE4_KDEUI_LIBS} ${QT_QTXML_LIBRARY})
+target_link_libraries(okularGenerator_poppler ${POPPLER_LIBRARY} okularcore ${KDE4_KDEUI_LIBS} Qt4::QtXml)
 
 install(TARGETS okularGenerator_poppler DESTINATION ${PLUGIN_INSTALL_DIR})
 

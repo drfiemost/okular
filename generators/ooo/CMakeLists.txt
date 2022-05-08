@@ -26,7 +26,7 @@ set(okularGenerator_ooo_PART_SRCS
 
 kde4_add_plugin(okularGenerator_ooo ${okularGenerator_ooo_PART_SRCS})
 
-target_link_libraries(okularGenerator_ooo okularcore ${KDE4_KIO_LIBS} ${MATH_LIB} ${QT_QTXML_LIBRARY})
+target_link_libraries(okularGenerator_ooo okularcore ${KDE4_KIO_LIBS} ${MATH_LIB} Qt4::QtXml)
 if (QCA2_FOUND)
   target_link_libraries(okularGenerator_ooo okularcore ${QCA2_LIBRARIES})
 endif (QCA2_FOUND)

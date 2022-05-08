@@ -24,10 +24,10 @@ set(CMAKE_AUTOMOC ON)
 
 kde4_add_library(okularplugin SHARED ${okular_SRCS})
 target_link_libraries(okularplugin
-        ${QT_QTCORE_LIBRARY}
-        ${QT_QTGUI_LIBRARY}
-        ${QT_QTDECLARATIVE_LIBRARY}
-        ${QT_QTXML_LIBRARY}
+        Qt4::QtCore
+        Qt4::QtGui
+        Qt4::QtDeclarative
+        Qt4::QtXml
         ${KDE4_KDECORE_LIBRARY}
         ${KDE4_KDEUI_LIBRARY}
         ${KDE4_KIO_LIBRARY}
