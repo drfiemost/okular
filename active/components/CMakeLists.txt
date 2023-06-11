@@ -21,6 +21,8 @@ set(okular_SRCS
 kde4_add_kcfg_files(okular_SRCS ${CMAKE_SOURCE_DIR}/conf/settings.kcfgc )
 
 set(CMAKE_AUTOMOC ON)
+set_property(SOURCE settings.h
+                    settings.cpp PROPERTY SKIP_AUTOMOC ON)
 
 kde4_add_library(okularplugin SHARED ${okular_SRCS})
 target_link_libraries(okularplugin

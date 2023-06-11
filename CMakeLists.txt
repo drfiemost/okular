@@ -60,6 +60,19 @@ else(NOT WIN32)
 endif(NOT WIN32)
 
 set(CMAKE_AUTOMOC ON)
+set_property(SOURCE ui_textdocumentsettings.h
+                    ui_chooseenginewidget.h
+                    ui_dlgaccessibilitybase.h
+                    ui_dlgeditorbase.h
+                    ui_dlggeneralbase.h
+                    ui_dlgannotationsbase.h
+                    ui_dlgperformancebase.h
+                    ui_dlgpresentationbase.h
+                    settings.cpp
+                    settings.h
+                    kspeechinterface.h
+                    settings_core.h
+                    settings_core.cpp PROPERTY SKIP_AUTOMOC ON)
 
 # okularcore
 
