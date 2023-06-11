@@ -29,10 +29,6 @@ class KPluginFactory;
 class KDocumentViewer;
 class Part;
 
-#ifdef KActivities_FOUND
-namespace KActivities { class ResourceInstance; }
-#endif
-
 /**
  * This is the application "Shell".  It has a menubar and a toolbar
  * but relies on the "Part" to do all the real work.
@@ -165,9 +161,6 @@ private:
   KAction* m_nextTabAction;
   KAction* m_prevTabAction;
 
-#ifdef KActivities_FOUND
-  KActivities::ResourceInstance* m_activityResource;
-#endif
   bool m_isValid;
 };
 
