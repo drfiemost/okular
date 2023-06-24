@@ -22,13 +22,16 @@ else(LIBSPECTRE_INCLUDE_DIR AND LIBSPECTRE_LIBRARY)
 if(NOT WIN32)
   # use pkg-config to get the directories and then use these values
   # in the FIND_PATH() and FIND_LIBRARY() calls
-  include(FindPkgConfig)
+  find_package(PkgConfig QUIET)
 
-  if(LIBSPECTRE_MINIMUM_VERSION})
-    pkg_check_modules(_pc_LIBSPECTRE libspectre>=${LIBSPECTRE_MINIMUM_VERSION})
-  else(LIBSPECTRE_MINIMUM_VERSION})
-    pkg_check_modules(_pc_LIBSPECTRE libspectre)
-  endif(LIBSPECTRE_MINIMUM_VERSION})
+  if(PKG_CONFIG_FOUND)
+    if(LIBSPECTRE_MINIMUM_VERSION})
+      pkg_check_modules(_pc_LIBSPECTRE libspectre>=${LIBSPECTRE_MINIMUM_VERSION})
+    else(LIBSPECTRE_MINIMUM_VERSION})
+      pkg_check_modules(_pc_LIBSPECTRE libspectre)
+    endif(LIBSPECTRE_MINIMUM_VERSION})
+  endif(PKG_CONFIG_FOUND)
+
 else(NOT WIN32)
   # do not use pkg-config on windows
   set(_pc_LIBSPECTRE_FOUND TRUE)
