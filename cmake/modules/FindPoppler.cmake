@@ -23,8 +23,11 @@ set(_poppler_version_bad FALSE)
 if(NOT WIN32)
   # use pkg-config to get the directories and then use these values
   # in the FIND_PATH() and FIND_LIBRARY() calls
-  include(FindPkgConfig)
-  pkg_check_modules(_pc_poppler poppler-qt4)
+  find_package(PkgConfig QUIET)
+
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(_pc_poppler poppler-qt4)
+  endif(PKG_CONFIG_FOUND)
   if(_pc_poppler_FOUND)
     if(NOT "${_pc_poppler_VERSION}" VERSION_GREATER 0.5.3)
       set(_poppler_version_bad TRUE)
