@@ -1227,7 +1227,14 @@ Document::OpenResult Part::doOpenFile( const KMimeType::Ptr &mimeA, const QStrin
     QString fileNameToOpen = fileNameToOpenA;
     QString compressedMime = compressedMimeFor( mime->name() );
     if ( compressedMime.isEmpty() )
-        compressedMime = compressedMimeFor( mime->parentMimeType() );
+    {
+        for (QString mimeType: mime->parentMimeTypes())
+        {
+            compressedMime = compressedMimeFor( mimeType );
+            if ( !compressedMime.isEmpty() )
+                break;
+        }
+    }
     if ( !compressedMime.isEmpty() )
     {
         *isCompressedFile = true;
