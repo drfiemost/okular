@@ -12,7 +12,6 @@
 
 #include <QApplication>
 #include <QColor>
-#include <QCustomEvent>
 #include <QHash>
 #include <QObject>
 
