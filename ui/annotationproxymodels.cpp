@@ -127,7 +127,7 @@ QModelIndex PageGroupProxyModel::index( int row, int column, const QModelIndex &
         return QModelIndex();
     } else {
       if ( row < mTreeIndexes.count() )
-        return createIndex( row, column, 0 );
+        return createIndex( row, column );
       else
         return QModelIndex();
     }
