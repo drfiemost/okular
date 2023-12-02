@@ -37,6 +37,8 @@
 #include <core/area.h>
 #include <core/fileprinter.h>
 
+#include <algorithm>
+
 const int XpsDebug = 4712;
 
 static KAboutData createAboutData()
@@ -527,7 +529,7 @@ static QByteArray readFileOrDirectoryParts( const KArchiveEntry *entry, QString 
     if ( entry->isDirectory() ) {
         const KArchiveDirectory* relDir = static_cast<const KArchiveDirectory *>( entry );
         QStringList entries = relDir->entries();
-        qSort( entries );
+        std::sort( entries.begin(), entries.end() );
         Q_FOREACH ( const QString &entry, entries ) {
             const KArchiveEntry* relSubEntry = relDir->entry( entry );
             if ( !relSubEntry->isFile() )
@@ -573,7 +575,7 @@ static const KArchiveEntry* loadEntry( KZip *archive, const QString &fileName, Q
     if ( newEntry->isDirectory() ) {
         const KArchiveDirectory* relDir = static_cast< const KArchiveDirectory * >( newEntry );
         QStringList relEntries = relDir->entries();
-        qSort( relEntries );
+        std::sort( relEntries.begin(), relEntries.end() );
         Q_FOREACH ( const QString &relEntry, relEntries ) {
             if ( relEntry.compare( entryName, Qt::CaseInsensitive ) == 0 ) {
                 return relDir->entry( relEntry );
@@ -647,7 +649,7 @@ static void preprocessXpsGradients( QList<XpsGradient> &gradients )
         return;
 
     // sort the gradients (case 1.)
-    qStableSort( gradients.begin(), gradients.end(), xpsGradientLessThan );
+    std::stable_sort( gradients.begin(), gradients.end(), xpsGradientLessThan );
 
     // no gradient with stop 0.0 (case 2.)
     if ( xpsGradientWithOffset( gradients, 0.0 ) == -1 ) {

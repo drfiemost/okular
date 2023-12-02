@@ -88,6 +88,7 @@
 #include "utils.h"
 #include "qpagesize.h" // TODO Convert to <> in Qt5
 
+#include <algorithm>
 #include <memory>
 
 #include <config-okular.h>
@@ -2338,7 +2339,7 @@ Document::OpenResult Document::openDocument( const QString & docFile, const KUrl
     if ( offercount > 1 )
     {
         // sort the offers: the offers with an higher priority come before
-        qStableSort( offers.begin(), offers.end(), kMimeTypeMoreThan( mime ) );
+        std::stable_sort( offers.begin(), offers.end(), kMimeTypeMoreThan( mime ) );
 
         if ( SettingsCore::chooseGenerators() )
         {

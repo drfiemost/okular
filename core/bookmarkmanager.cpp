@@ -22,6 +22,8 @@
 #include "document_p.h"
 #include "observer.h"
 
+#include <algorithm>
+
 using namespace Okular;
 
 #define foreachObserver( cmd ) {\
@@ -603,7 +605,7 @@ QList< QAction * > BookmarkManager::actionsForUrl( const KUrl& url ) const
         }
         break;
     }
-    qSort( ret.begin(), ret.end(), okularBookmarkActionLessThan );
+    std::sort( ret.begin(), ret.end(), okularBookmarkActionLessThan );
     return ret;
 }
 
@@ -701,7 +703,7 @@ bool BookmarkManager::isBookmarked( const DocumentViewport &viewport ) const
 KBookmark BookmarkManager::nextBookmark( const DocumentViewport &viewport) const
 {
     KBookmark::List bmarks = bookmarks();
-    qSort( bmarks.begin(), bmarks.end(), bookmarkLessThan);
+    std::sort( bmarks.begin(), bmarks.end(), bookmarkLessThan);
 
     KBookmark bookmark;
     foreach ( const KBookmark &bm, bmarks )
@@ -720,7 +722,7 @@ KBookmark BookmarkManager::nextBookmark( const DocumentViewport &viewport) const
 KBookmark BookmarkManager::previousBookmark( const DocumentViewport &viewport ) const
 {
     KBookmark::List bmarks = bookmarks();
-    qSort( bmarks.begin(), bmarks.end(), bookmarkLessThan );
+    std::sort( bmarks.begin(), bmarks.end(), bookmarkLessThan );
 
     KBookmark bookmark;
     for ( KBookmark::List::const_iterator it = bmarks.constEnd(); it != bmarks.constBegin(); --it )

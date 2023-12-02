@@ -85,6 +85,8 @@
 #include "url_utils.h"
 #include "magnifierview.h"
 
+#include <algorithm>
+
 static int pageflags = PagePainter::Accessibility | PagePainter::EnhanceLinks |
                        PagePainter::EnhanceImages | PagePainter::Highlights |
                        PagePainter::TextSelection | PagePainter::Annotations;
@@ -862,7 +864,7 @@ QString PageViewPrivate::selectedText() const
 
     QString text;
     QList< int > selpages = pagesWithTextSelection.toList();
-    qSort( selpages );
+    std::sort( selpages.begin(), selpages.end() );
     const Okular::Page * pg = 0;
     if ( selpages.count() == 1 )
     {
@@ -1263,7 +1265,7 @@ void PageView::notifyPageChanged( int pageNumber, int changedFlags )
         QHash< Okular::Annotation*, AnnotWindow * >::Iterator it = d->m_annowindows.begin();
         for ( ; it != d->m_annowindows.end(); )
         {
-            QLinkedList< Okular::Annotation * >::ConstIterator annIt = qFind( annots, it.key() );
+            QLinkedList< Okular::Annotation * >::ConstIterator annIt = std::find( annots.begin(), annots.end(), it.key() );
             if ( annIt != annItEnd )
             {
                 (*it)->reloadInfo();
@@ -2263,7 +2265,7 @@ void PageView::mousePressEvent( QMouseEvent * e )
                                 col += tsp.rectInSelection.left; // at this point, it's normalised within the whole table
 
                                 d->tableSelectionCols.append(col);
-                                qSort(d->tableSelectionCols);
+                                std::sort(d->tableSelectionCols.begin(), d->tableSelectionCols.end());
                             }
                         } else {
                             bool deleted=false;
@@ -2284,7 +2286,7 @@ void PageView::mousePressEvent( QMouseEvent * e )
                                 row += tsp.rectInSelection.top; // at this point, it's normalised within the whole table
 
                                 d->tableSelectionRows.append(row);
-                                qSort(d->tableSelectionRows);
+                                std::sort(d->tableSelectionRows.begin(), d->tableSelectionRows.end());
                             }
                         }
                     }
@@ -3034,8 +3036,8 @@ void PageView::guessTableDividers()
 
     int tally = 0;
 
-    qSort( colSelectionTicks );
-    qSort( rowSelectionTicks );
+    std::sort( colSelectionTicks.begin(), colSelectionTicks.end() );
+    std::sort( rowSelectionTicks.begin(), rowSelectionTicks.end() );
 
     for (int i = 0; i < colSelectionTicks.length(); ++i)
     {
@@ -3058,8 +3060,8 @@ void PageView::guessTableDividers()
     }
     Q_ASSERT( tally == 0 );
 
-    qSort( colTicks );
-    qSort( rowTicks );
+    std::sort( colTicks.begin(), colTicks.end() );
+    std::sort( rowTicks.begin(), rowTicks.end() );
 
     for (int i = 0; i < colTicks.length(); ++i)
     {
@@ -3769,22 +3771,22 @@ void PageView::updateZoom( ZoomMode newZoomMode )
             const float zoomFactorFitWidth = zoomFactorFitMode(ZoomFitWidth);
             const float zoomFactorFitPage = zoomFactorFitMode(ZoomFitPage);
             QVector<float> zoomValue(15);
-            qCopy(kZoomValues, kZoomValues + 13, zoomValue.begin());
+            std::copy(kZoomValues, kZoomValues + 13, zoomValue.begin());
             zoomValue[13] = zoomFactorFitWidth;
             zoomValue[14] = zoomFactorFitPage;
-            qSort(zoomValue.begin(), zoomValue.end());
+            std::sort(zoomValue.begin(), zoomValue.end());
             QVector<float>::iterator i;
             if ( newZoomMode == ZoomOut )
             {
                 if (newFactor <= zoomValue.first())
                     return;
-                i = qLowerBound(zoomValue.begin(), zoomValue.end(), newFactor) - 1;
+                i = std::lower_bound(zoomValue.begin(), zoomValue.end(), newFactor) - 1;
             }
             else
             {
                 if (newFactor >= zoomValue.last())
                     return;
-                i = qUpperBound(zoomValue.begin(), zoomValue.end(), newFactor);
+                i = std::upper_bound(zoomValue.begin(), zoomValue.end(), newFactor);
             }
             const float tmpFactor = *i;
             if ( tmpFactor == zoomFactorFitWidth )

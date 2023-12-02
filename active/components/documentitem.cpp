@@ -27,6 +27,8 @@
 
 #include "ui/tocmodel.h"
 
+#include <algorithm>
+
 DocumentItem::DocumentItem(QObject *parent)
     : QObject(parent),
       m_thumbnailObserver(0),
@@ -136,7 +138,7 @@ QList<int> DocumentItem::bookmarkedPages() const
         pages << viewport.pageNumber;
     }
     list = pages.toList();
-    qSort(list);
+    std::sort(list.begin(), list.end());
     return list;
 }
 

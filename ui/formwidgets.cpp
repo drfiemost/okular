@@ -23,6 +23,8 @@
 #include "core/form.h"
 #include "core/document.h"
 
+#include <algorithm>
+
 FormWidgetsController::FormWidgetsController( Okular::Document *doc )
     : QObject( doc ), m_doc( doc )
 {
@@ -87,7 +89,7 @@ QButtonGroup* FormWidgetsController::registerRadioButton( QAbstractButton *butto
     m_buttons.insert( id, button );
     for ( ; it != itEnd; ++it )
     {
-        const QList< int >::const_iterator idsIt = qFind( (*it).ids, id );
+        const QList< int >::const_iterator idsIt = std::find( (*it).ids.begin(), (*it).ids.end(), id );
         if ( idsIt != (*it).ids.constEnd() )
         {
             kDebug(4700) << "Adding id" << id << "To group including" << (*it).ids;

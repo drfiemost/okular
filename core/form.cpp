@@ -15,6 +15,8 @@
 
 #include "action.h"
 
+#include <algorithm>
+
 using namespace Okular;
 
 FormFieldPrivate::FormFieldPrivate( FormField::FieldType type )
@@ -205,7 +207,7 @@ class Okular::FormFieldChoicePrivate : public Okular::FormFieldPrivate
         {
             Q_Q( const FormFieldChoice );
             QList<int> choices = q->currentChoices();
-            qSort( choices );
+            std::sort( choices.begin(), choices.end() );
             QStringList list;
             foreach ( int c, choices )
             {

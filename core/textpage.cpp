@@ -23,6 +23,8 @@
 #include <QtAlgorithms>
 #include <QVarLengthArray>
 
+#include <algorithm>
+
 using namespace Okular;
 
 class SearchPoint
@@ -118,14 +120,14 @@ static bool doesConsumeY(const NormalizedRect& first, const NormalizedRect& seco
  */
 class TinyTextEntity
 {
-    static const int MaxStaticChars = sizeof( QChar * ) / sizeof( QChar );
+    static const int MaxStaticChars = sizeof( void * ) / sizeof( QChar );
 
     public:
         TinyTextEntity( const QString &text, const NormalizedRect &rect )
             : area( rect )
         {
             Q_ASSERT_X( !text.isEmpty(), "TinyTextEntity", "empty string" );
-            Q_ASSERT_X( sizeof( d ) == sizeof( QChar * ), "TinyTextEntity",
+            Q_ASSERT_X( sizeof( d ) == sizeof( void * ), "TinyTextEntity",
                         "internal storage is wider than QChar*, fix it!" );
             length = text.length();
             switch ( length )
@@ -1293,7 +1295,7 @@ QList< QPair<WordsWithCharacters, QRect> > makeAndSortLines(const WordsWithChara
     QList<WordWithCharacters> words = wordsTmp;
 
     // Step 1
-    qSort(words.begin(),words.end(),compareTinyTextEntityY);
+    std::sort(words.begin(),words.end(),compareTinyTextEntityY);
 
     // Step 2
     QList<WordWithCharacters>::Iterator it = words.begin(), itEnd = words.end();
@@ -1356,7 +1358,7 @@ QList< QPair<WordsWithCharacters, QRect> > makeAndSortLines(const WordsWithChara
     for(int i = 0 ; i < lines.length() ; i++)
     {
         WordsWithCharacters &list = lines[i].first;
-        qSort(list.begin(), list.end(), compareTinyTextEntityX);
+        std::sort(list.begin(), list.end(), compareTinyTextEntityX);
     }
     
     return lines;
