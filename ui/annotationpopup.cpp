@@ -20,6 +20,33 @@
 
 Q_DECLARE_METATYPE( AnnotationPopup::AnnotPagePair )
 
+namespace {
+
+bool annotationHasFileAttachment( Okular::Annotation *annotation )
+{
+    return ( annotation->subType() == Okular::Annotation::AFileAttachment || annotation->subType() == Okular::Annotation::ARichMedia );
+}
+
+Okular::EmbeddedFile* embeddedFileFromAnnotation( Okular::Annotation *annotation )
+{
+    if ( annotation->subType() == Okular::Annotation::AFileAttachment )
+    {
+        const Okular::FileAttachmentAnnotation *fileAttachAnnot = static_cast<Okular::FileAttachmentAnnotation*>( annotation );
+        return fileAttachAnnot->embeddedFile();
+    }
+    else if ( annotation->subType() == Okular::Annotation::ARichMedia )
+    {
+        const Okular::RichMediaAnnotation *richMediaAnnot = static_cast<Okular::RichMediaAnnotation*>( annotation );
+        return richMediaAnnot->embeddedFile();
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+}
+
 AnnotationPopup::AnnotationPopup( Okular::Document *document, MenuMode mode,
                                   QWidget *parent )
     : mParent( parent ), mDocument( document ), mMenuMode( mode )
@@ -41,7 +68,6 @@ void AnnotationPopup::exec( const QPoint &point )
     KMenu menu( mParent );
 
     QAction *action = 0;
-    Okular::FileAttachmentAnnotation *fileAttachAnnot = 0;
 
     const char *actionTypeId = "actionType";
 
@@ -79,15 +105,18 @@ void AnnotationPopup::exec( const QPoint &point )
         action->setEnabled( onlyOne );
         action->setProperty( actionTypeId, propertiesId );
 
-        if ( onlyOne && pair.annotation->subType() == Okular::Annotation::AFileAttachment )
+        if ( onlyOne && annotationHasFileAttachment( pair.annotation ) )
         {
-            menu.addSeparator();
-            fileAttachAnnot = static_cast< Okular::FileAttachmentAnnotation * >( pair.annotation );
-            const QString saveText = i18nc( "%1 is the name of the file to save", "&Save '%1'...", fileAttachAnnot->embeddedFile()->name() );
+            const Okular::EmbeddedFile *embeddedFile = embeddedFileFromAnnotation( pair.annotation );
+            if ( embeddedFile )
+            {
+                const QString saveText = i18nc( "%1 is the name of the file to save", "&Save '%1'...", embeddedFile->name() );
 
-            action = menu.addAction( KIcon( "document-save" ), saveText );
-            action->setData( QVariant::fromValue( pair ) );
-            action->setProperty( actionTypeId, saveId );
+                menu.addSeparator();
+                action = menu.addAction( QIcon::fromTheme( "document-save" ), saveText );
+                action->setData( QVariant::fromValue( pair ) );
+                action->setProperty( actionTypeId, saveId );
+            }
         }
     }
     else
@@ -110,15 +139,18 @@ void AnnotationPopup::exec( const QPoint &point )
             action->setData( QVariant::fromValue( pair ) );
             action->setProperty( actionTypeId, propertiesId );
 
-            if ( pair.annotation->subType() == Okular::Annotation::AFileAttachment )
+            if ( annotationHasFileAttachment( pair.annotation ) )
             {
-                menu.addSeparator();
-                fileAttachAnnot = static_cast< Okular::FileAttachmentAnnotation * >( pair.annotation );
-                const QString saveText = i18nc( "%1 is the name of the file to save", "&Save '%1'...", fileAttachAnnot->embeddedFile()->name() );
+                const Okular::EmbeddedFile *embeddedFile = embeddedFileFromAnnotation( pair.annotation );
+                if ( embeddedFile )
+                {
+                    const QString saveText = i18nc( "%1 is the name of the file to save", "&Save '%1'...", embeddedFile->name() );
 
-                action = menu.addAction( KIcon( "document-save" ), saveText );
-                action->setData( QVariant::fromValue( pair ) );
-                action->setProperty( actionTypeId, saveId );
+                    menu.addSeparator();
+                    action = menu.addAction( QIcon::fromTheme( "document-save" ), saveText );
+                    action->setData( QVariant::fromValue( pair ) );
+                    action->setProperty( actionTypeId, saveId );
+                }
             }
         }
     }
@@ -147,8 +179,8 @@ void AnnotationPopup::exec( const QPoint &point )
                 propdialog.exec();
             }
         } else if( actionType == saveId ) {
-            const Okular::FileAttachmentAnnotation * fileAttachAnnot = static_cast< Okular::FileAttachmentAnnotation * >( pair.annotation );
-            GuiUtils::saveEmbeddedFile( fileAttachAnnot->embeddedFile(), mParent );
+            Okular::EmbeddedFile *embeddedFile = embeddedFileFromAnnotation( pair.annotation );
+            GuiUtils::saveEmbeddedFile( embeddedFile, mParent );
         }
     }
 }

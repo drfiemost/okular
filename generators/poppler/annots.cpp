@@ -28,6 +28,9 @@ extern Okular::Movie* createMovieFromPopplerMovie( const Poppler::MovieObject *p
 #ifdef HAVE_POPPLER_0_20
 extern Okular::Movie* createMovieFromPopplerScreen( const Poppler::LinkRendition *popplerScreen );
 #endif
+#ifdef HAVE_POPPLER_0_37
+extern QPair<Okular::Movie*, Okular::EmbeddedFile*> createMovieFromPopplerRichMedia( const Poppler::RichMediaAnnotation *popplerRichMedia );
+#endif
 
 
 static void disposeAnnotation( const Okular::Annotation *ann )
@@ -336,6 +339,26 @@ Okular::Annotation* createAnnotationFromPopplerAnnotation( Poppler::Annotation *
 #endif
             break;
         }
+
+#ifdef HAVE_POPPLER_0_37
+        case Poppler::Annotation::ARichMedia:
+        {
+            Poppler::RichMediaAnnotation * richmediaann = static_cast< Poppler::RichMediaAnnotation * >( ann );
+            const QPair<Okular::Movie*, Okular::EmbeddedFile*> result = createMovieFromPopplerRichMedia( richmediaann );
+
+            if ( result.first ) {
+                Okular::RichMediaAnnotation * r = new Okular::RichMediaAnnotation();
+                tieToOkularAnn = true;
+                *doDelete = false;
+                annotation = r;
+
+                r->setMovie( result.first );
+                r->setEmbeddedFile( result.second );
+            }
+
+            break;
+        }
+#endif
         case Poppler::Annotation::AText:
         case Poppler::Annotation::ALine:
         case Poppler::Annotation::AGeom:
