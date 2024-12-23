@@ -57,6 +57,7 @@ Q_DECLARE_METATYPE(Poppler::Annotation*)
 Q_DECLARE_METATYPE(Poppler::FontInfo)
 Q_DECLARE_METATYPE(const Poppler::LinkMovie*)
 Q_DECLARE_METATYPE(const Poppler::LinkRendition*)
+Q_DECLARE_METATYPE(const Poppler::LinkOCGState*)
 
 static const int defaultPageWidth = 595;
 static const int defaultPageHeight = 842;
@@ -864,7 +865,6 @@ QAbstractItemModel* PDFGenerator::layersModel() const
 void PDFGenerator::opaqueAction( const Okular::BackendOpaqueAction *action )
 {
 #ifdef HAVE_POPPLER_0_50
-a
     const Poppler::LinkOCGState *popplerLink = action->nativeId().value<const Poppler::LinkOCGState *>();
     pdfdoc->optionalContentModel()->applyLink( const_cast< Poppler::LinkOCGState* >( popplerLink ) );
 #else

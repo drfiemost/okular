@@ -10,8 +10,8 @@ set (HAVE_POPPLER_0_36 1)
 set (HAVE_POPPLER_0_37 1)
 set (HAVE_POPPLER_0_50 1)
 
-set(CMAKE_REQUIRED_INCLUDES ${POPPLER_INCLUDE_DIR} ${QT_INCLUDE_DIR})
-set(CMAKE_REQUIRED_LIBRARIES ${POPPLER_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTXML_LIBRARY})
+set(CMAKE_REQUIRED_INCLUDES ${POPPLER_QT4_INCLUDE_DIR} ${QT_INCLUDE_DIR})
+set(CMAKE_REQUIRED_LIBRARIES ${POPPLER_QT4_LIBRARIES} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTXML_LIBRARY})
 
 configure_file(
    ${CMAKE_CURRENT_SOURCE_DIR}/config-okular-poppler.h.cmake
@@ -19,10 +19,10 @@ configure_file(
 )
 
 # Can be multiple include directories for poppler
-separate_arguments(POPPLER_INCLUDE_DIR)
-foreach(_include_dir ${POPPLER_INCLUDE_DIR})
+separate_arguments(POPPLER_QT4_INCLUDE_DIR)
+foreach(_include_dir ${POPPLER_QT4_INCLUDE_DIR})
     include_directories(${_include_dir})
-endforeach(_include_dir ${POPPLER_INCLUDE_DIR})
+endforeach(_include_dir ${POPPLER_QT4_INCLUDE_DIR})
 
 include_directories(
    ${CMAKE_BINARY_DIR}/okular
@@ -45,7 +45,7 @@ kde4_add_kcfg_files(okularGenerator_poppler_PART_SRCS conf/pdfsettings.kcfgc )
 
 kde4_add_plugin(okularGenerator_poppler ${okularGenerator_poppler_PART_SRCS})
 
-target_link_libraries(okularGenerator_poppler ${POPPLER_LIBRARY} okularcore ${KDE4_KDEUI_LIBS} Qt4::QtXml)
+target_link_libraries(okularGenerator_poppler ${POPPLER_QT4_LIBRARIES} okularcore ${KDE4_KDEUI_LIBS} Qt4::QtXml)
 
 install(TARGETS okularGenerator_poppler DESTINATION ${PLUGIN_INSTALL_DIR})
 
