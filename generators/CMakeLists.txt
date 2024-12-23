@@ -37,9 +37,9 @@ macro_log_feature(QMOBIPOCKET_FOUND "libqmobipocket" "A library for reading Mobi
 
 # let's enable the generators properly configured
 
-if(POPPLER_FOUND AND HAVE_POPPLER_0_12_1)
+if(POPPLER_FOUND)
   add_subdirectory(poppler)
-endif(POPPLER_FOUND AND HAVE_POPPLER_0_12_1)
+endif(POPPLER_FOUND)
 
 if(LIBSPECTRE_FOUND)
   add_subdirectory(spectre)

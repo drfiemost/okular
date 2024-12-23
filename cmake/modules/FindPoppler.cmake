@@ -29,9 +29,9 @@ if(NOT WIN32)
     pkg_check_modules(_pc_poppler poppler-qt4)
   endif(PKG_CONFIG_FOUND)
   if(_pc_poppler_FOUND)
-    if(NOT "${_pc_poppler_VERSION}" VERSION_GREATER 0.5.3)
+    if(NOT "${_pc_poppler_VERSION}" VERSION_GREATER 0.61.0)
       set(_poppler_version_bad TRUE)
-    endif(NOT "${_pc_poppler_VERSION}" VERSION_GREATER 0.5.3)
+    endif()
   endif(_pc_poppler_FOUND)
 endif(NOT WIN32)
 
@@ -64,108 +64,18 @@ if (POPPLER_FOUND)
   set(CMAKE_REQUIRED_INCLUDES ${POPPLER_INCLUDE_DIR} ${QT_INCLUDE_DIR})
   set(CMAKE_REQUIRED_LIBRARIES ${POPPLER_LIBRARY} ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTXML_LIBRARY})
 
-check_cxx_source_compiles("
-#include <poppler-qt4.h>
-int main()
-{
-  Poppler::Document::RenderHint hint = Poppler::Document::TextHinting;
-  return 0;
-}
-" HAVE_POPPLER_0_12_1)
-
-check_cxx_source_compiles("
-#include <poppler-qt4.h>
-
-void debugFunction(const QString &message, const QVariant &closure)
-{
-}
-
-int main()
-{
-  Poppler::setDebugErrorFunction(debugFunction, QVariant());
-  return 0;
-}
-" HAVE_POPPLER_0_16)
-
-check_cxx_source_compiles("
-#include <poppler-qt4.h>
-#include <poppler-media.h>
-
-int main()
-{
-  Poppler::ScreenAnnotation *annot = 0;
-  Poppler::LinkRendition *link = 0;
-  const Poppler::LinkMovie::Operation operation = Poppler::LinkMovie::Play;
-  return 0;
-}
-" HAVE_POPPLER_0_20)
-
-check_cxx_source_compiles("
-#include <poppler-qt4.h>
-#include <poppler-annotation.h>
-#include <poppler-link.h>
-
-int main()
-{
-  Poppler::MovieObject *movie = 0;
-  Poppler::Document *doc = 0;
-  movie->showPosterImage();
-
-  const Poppler::Annotation::AdditionalActionType type = Poppler::Annotation::PageOpeningAction;
-  const Poppler::LinkRendition::RenditionAction action = Poppler::LinkRendition::NoRendition;
-  const Poppler::Document::FormType formType = doc->formType();
-
-  return 0;
-}
-" HAVE_POPPLER_0_22)
-
-check_cxx_source_compiles("
-#include <poppler-qt4.h>
-int main()
-{
-  Poppler::Document::RenderHint hint = Poppler::Document::ThinLineSolid;
-  return 0;
-}
-" HAVE_POPPLER_0_24)
-
-check_cxx_source_compiles("
-#include <poppler-qt4.h>
-int main()
-{
-  Poppler::Page *p = 0;
-  p->annotations( QSet<Poppler::Annotation::SubType>() << Poppler::Annotation::ASound );
-  return 0;
-}
-" HAVE_POPPLER_0_28)
-
-check_cxx_source_compiles("
-#include <poppler-qt4.h>
-int main()
-{
-  Poppler::PageTransition *p = 0;
-  return p->durationReal();
-}
-" HAVE_POPPLER_0_37)
-
   set(CMAKE_REQUIRED_INCLUDES)
   set(CMAKE_REQUIRED_LIBRARIES)
-  if (HAVE_POPPLER_0_37)
-    set(popplerVersionMessage "0.37")
-  elseif (HAVE_POPPLER_0_28)
-    set(popplerVersionMessage "0.28")
-  elseif (HAVE_POPPLER_0_24)
-    set(popplerVersionMessage "0.24")
-  elseif (HAVE_POPPLER_0_22)
-    set(popplerVersionMessage "0.22")
-  elseif (HAVE_POPPLER_0_20)
-    set(popplerVersionMessage "0.20")
-  elseif (HAVE_POPPLER_0_16)
-    set(popplerVersionMessage "0.16")
-  elseif (HAVE_POPPLER_0_12_1)
-    set(popplerVersionMessage "0.12.1")
-  else (HAVE_POPPLER_0_28)
-    set(popplerVersionMessage "0.5.4")
-  endif ()
+
+  set(popplerVersionMessage "0.37")
+  add_compile_definitions(HAVE_POPPLER_0_37)
+  add_compile_definitions(HAVE_POPPLER_0_28)
+  add_compile_definitions(HAVE_POPPLER_0_24)
+  add_compile_definitions(HAVE_POPPLER_0_22)
+  add_compile_definitions(HAVE_POPPLER_0_20)
+  add_compile_definitions(HAVE_POPPLER_0_16)
+  add_compile_definitions(HAVE_POPPLER_0_12_1)
+
   if (NOT Poppler_FIND_QUIETLY)
     message(STATUS "Found Poppler-Qt4: ${POPPLER_LIBRARY}, (>= ${popplerVersionMessage})")
   endif (NOT Poppler_FIND_QUIETLY)
@@ -179,6 +89,5 @@ endif (POPPLER_FOUND)
 # ensure that they are cached
 set(POPPLER_INCLUDE_DIR ${POPPLER_INCLUDE_DIR} CACHE INTERNAL "The Poppler-Qt4 include path")
 set(POPPLER_LIBRARY ${POPPLER_LIBRARY} CACHE INTERNAL "The Poppler-Qt4 library")
-set(HAVE_POPPLER_0_12_1 ${HAVE_POPPLER_0_12_1} CACHE INTERNAL "Whether the version of Poppler-Qt4 is >= 0.12.1")
 
 endif(POPPLER_INCLUDE_DIR AND POPPLER_LIBRARY)
