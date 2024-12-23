@@ -79,7 +79,7 @@ bool DviGenerator::loadDocument( const QString & fileName, QVector< Okular::Page
 
     (void)userMutex();
 
-    m_dviRenderer = new dviRenderer(documentMetaData("TextHinting", QVariant()).toBool());
+    m_dviRenderer = new dviRenderer(documentMetaData(TextHintingMetaData, QVariant()).toBool());
     connect( m_dviRenderer, SIGNAL( error(QString,int) ), this, SIGNAL( error(QString,int) ) );
     connect( m_dviRenderer, SIGNAL( warning(QString,int) ), this, SIGNAL( warning(QString,int) ) );
     connect( m_dviRenderer, SIGNAL( notice(QString,int) ), this, SIGNAL( notice(QString,int) ) );

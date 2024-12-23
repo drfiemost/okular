@@ -343,6 +343,10 @@ Generator::PrintError Generator::printError() const
     return UnknownPrintError;
 }
 
+void Generator::opaqueAction( const BackendOpaqueAction * /*action*/ )
+{
+}
+
 QVariant Generator::metaData( const QString &key, const QVariant &option ) const
 {
     Q_D( const Generator );
@@ -412,6 +416,24 @@ void Generator::setFeature( GeneratorFeature feature, bool on )
 }
 
 QVariant Generator::documentMetaData( const QString &key, const QVariant &option ) const
+{
+    Q_D( const Generator );
+    if ( !d->m_document )
+        return QVariant();
+
+    if (key == QLatin1String("PaperColor"))
+        return documentMetaData(PaperColorMetaData, option);
+    if (key == QLatin1String("GraphicsAntialias"))
+        return documentMetaData(GraphicsAntialiasMetaData, option);
+    if (key == QLatin1String("TextAntialias"))
+        return documentMetaData(TextAntialiasMetaData, option);
+    if (key == QLatin1String("TextHinting"))
+        return documentMetaData(TextHintingMetaData, option);
+
+    return QVariant();
+}
+
+QVariant Generator::documentMetaData( const DocumentMetaDataKey &key, const QVariant &option ) const
 {
     Q_D( const Generator );
     if ( !d->m_document )
