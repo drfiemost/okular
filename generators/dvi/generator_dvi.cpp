@@ -471,6 +471,8 @@ Okular::FontInfo::List DviGenerator::fontsForPage( int page )
                 case TeXFontDefinition::FREETYPE:
                     ft = Okular::FontInfo::TeXFreeTypeHandled;
                     break;
+                default:
+                    Q_UNREACHABLE();
             }
             of.setType( ft );
 
