@@ -22,10 +22,10 @@ Okular::LineAnnotation* getNewLineAnnotation(double startX, double startY, doubl
     << Okular::NormalizedPoint( endX, endY )
     );
 
-    double left = qMin(startX, endX);
-    double top = qMin(startY, endY);
-    double right = qMax(startX, endX);
-    double bottom = qMax(startY, endY);
+    double left = std::min(startX, endX);
+    double top = std::min(startY, endY);
+    double right = std::max(startX, endX);
+    double bottom = std::max(startY, endY);
 
     line->setBoundingRectangle( Okular::NormalizedRect(left, top, right, bottom) );
     return line;

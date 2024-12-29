@@ -1692,7 +1692,7 @@ void PageView::resizeEvent( QResizeEvent *e )
         return;
     }
 
-    if ( ( d->zoomMode == ZoomFitWidth || d->zoomMode == ZoomFitAuto ) && !verticalScrollBar()->isVisible() && qAbs(e->oldSize().height() - e->size().height()) < verticalScrollBar()->width() && d->verticalScrollBarVisible )
+    if ( ( d->zoomMode == ZoomFitWidth || d->zoomMode == ZoomFitAuto ) && !verticalScrollBar()->isVisible() && std::abs(e->oldSize().height() - e->size().height()) < verticalScrollBar()->width() && d->verticalScrollBarVisible )
     {
         // this saves us from infinite resizing loop because of scrollbars appearing and disappearing
         // see bug 160628 for more info
@@ -1702,7 +1702,7 @@ void PageView::resizeEvent( QResizeEvent *e )
         resizeContentArea( e->size() );
         return;
     }
-    else if ( d->zoomMode == ZoomFitAuto && !horizontalScrollBar()->isVisible() && qAbs(e->oldSize().width() - e->size().width()) < horizontalScrollBar()->height() && d->horizontalScrollBarVisible )
+    else if ( d->zoomMode == ZoomFitAuto && !horizontalScrollBar()->isVisible() && std::abs(e->oldSize().width() - e->size().width()) < horizontalScrollBar()->height() && d->horizontalScrollBarVisible )
     {
         // this saves us from infinite resizing loop because of scrollbars appearing and disappearing
         // TODO looks are still a bit ugly because things are left uncentered
@@ -2555,7 +2555,7 @@ void PageView::mouseReleaseEvent( QMouseEvent * e )
                 }
 
                 // find out new zoom ratio and normalized view center (relative to the contentsRect)
-                double zoom = qMin( (double)viewport()->width() / (double)selRect.width(), (double)viewport()->height() / (double)selRect.height() );
+                double zoom = std::min( (double)viewport()->width() / (double)selRect.width(), (double)viewport()->height() / (double)selRect.height() );
                 double nX = (double)(selRect.left() + selRect.right()) / (2.0 * (double)contentAreaWidth());
                 double nY = (double)(selRect.top() + selRect.bottom()) / (2.0 * (double)contentAreaHeight());
 
@@ -3480,13 +3480,13 @@ void PageView::updateItemSize( PageViewItem * item, int colWidth, int rowHeight 
         if ( ( crop.right - crop.left ) < minCropRatio )
         {
             const double newLeft = ( crop.left + crop.right ) / 2 - minCropRatio/2;
-            crop.left = qMax( 0.0, qMin( 1.0 - minCropRatio, newLeft ) );
+            crop.left = std::max( 0.0, std::min( 1.0 - minCropRatio, newLeft ) );
             crop.right = crop.left + minCropRatio;
         }
         if ( ( crop.bottom - crop.top ) < minCropRatio )
         {
             const double newTop = ( crop.top + crop.bottom ) / 2 - minCropRatio/2;
-            crop.top = qMax( 0.0, qMin( 1.0 - minCropRatio, newTop ) );
+            crop.top = std::max( 0.0, std::min( 1.0 - minCropRatio, newTop ) );
             crop.bottom = crop.top + minCropRatio;
         }
 
@@ -3516,7 +3516,7 @@ void PageView::updateItemSize( PageViewItem * item, int colWidth, int rowHeight 
     {
         const double scaleW = (double)colWidth / (double)width;
         const double scaleH = (double)rowHeight / (double)height;
-        zoom = qMin( scaleW, scaleH );
+        zoom = std::min( scaleW, scaleH );
         item->setWHZC( (int)(zoom * width), (int)(zoom * height), zoom, crop );
         if ((uint)item->pageNumber() == d->document->currentPage())
             d->zoomFactor = zoom;
@@ -3544,7 +3544,7 @@ void PageView::updateItemSize( PageViewItem * item, int colWidth, int rowHeight 
             // aspect ratios of page and UI space are very similar
             const double scaleW = (double)colWidth / (double)width;
             const double scaleH = (double)rowHeight / (double)height;
-            zoom = qMin( scaleW, scaleH );
+            zoom = std::min( scaleW, scaleH );
         }
         item->setWHZC( (int)(zoom * width), (int)(zoom * height), zoom, crop );
         if ((uint)item->pageNumber() == d->document->currentPage())
@@ -3739,7 +3739,7 @@ double PageView::zoomFactorFitMode( ZoomMode mode )
     const int nCols = overrideCentering ? 1 : viewColumns();
     const double colWidth = viewport()->width() / nCols - kcolWidthMargin;
     const double rowHeight = viewport()->height() - krowHeightMargin;
-    const PageViewItem * currentItem = d->items[ qMax( 0, (int)d->document->currentPage()) ];
+    const PageViewItem * currentItem = d->items[ std::max( 0, (int)d->document->currentPage()) ];
     // prevent segmentation fault when openning a new document;
     if ( !currentItem )
         return 0;
@@ -3751,7 +3751,7 @@ double PageView::zoomFactorFitMode( ZoomMode mode )
     {
         const double scaleW = (double) colWidth / (double)width;
         const double scaleH = (double) rowHeight / (double)height;
-        return qMin(scaleW, scaleH);
+        return std::min(scaleW, scaleH);
     }
     return 0;
 }
@@ -3872,7 +3872,7 @@ void PageView::updateZoomText()
 {
     // use current page zoom as zoomFactor if in ZoomFit/* mode
     if ( d->zoomMode != ZoomFixed && d->items.count() > 0 )
-        d->zoomFactor = d->items[ qMax( 0, (int)d->document->currentPage() ) ]->zoomFactor();
+        d->zoomFactor = d->items[ std::max( 0, (int)d->document->currentPage() ) ]->zoomFactor();
     float newFactor = d->zoomFactor;
     d->aZoom->removeAllActions();
 
@@ -4271,7 +4271,7 @@ void PageView::slotRelayoutPages()
 
     // set all items geometry and resize contents. handle 'continuous' and 'single' modes separately
 
-    PageViewItem * currentItem = d->items[ qMax( 0, (int)d->document->currentPage() ) ];
+    PageViewItem * currentItem = d->items[ std::max( 0, (int)d->document->currentPage() ) ];
 
         // Here we find out column's width and row's height to compute a table
         // so we can place widgets 'centered in virtual cells'.
@@ -4545,10 +4545,10 @@ void PageView::slotRequestVisiblePixmaps( int newValue )
         if ( i->page()->hasTilesManager( this ) && Okular::Settings::memoryLevel() != Okular::Settings::EnumMemoryLevel::Low )
         {
             double rectMargin = pixelsToExpand/(double)i->uncroppedHeight();
-            expandedVisibleRect.left = qMax( 0.0, vItem->rect.left - rectMargin );
-            expandedVisibleRect.top = qMax( 0.0, vItem->rect.top - rectMargin );
-            expandedVisibleRect.right = qMin( 1.0, vItem->rect.right + rectMargin );
-            expandedVisibleRect.bottom = qMin( 1.0, vItem->rect.bottom + rectMargin );
+            expandedVisibleRect.left = std::max( 0.0, vItem->rect.left - rectMargin );
+            expandedVisibleRect.top = std::max( 0.0, vItem->rect.top - rectMargin );
+            expandedVisibleRect.right = std::min( 1.0, vItem->rect.right + rectMargin );
+            expandedVisibleRect.bottom = std::min( 1.0, vItem->rect.bottom + rectMargin );
         }
 
         // if the item has not the right pixmap, add a request for it

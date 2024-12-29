@@ -323,7 +323,7 @@ qulonglong DocumentPrivate::calculateMemoryToFree()
         {
             qulonglong freeSwap;
             qulonglong freeMemory = getFreeMemory( &freeSwap );
-            const qulonglong memoryLimit = qMin( qMax( freeMemory, getTotalMemory()/2 ), freeMemory+freeSwap );
+            const qulonglong memoryLimit = std::min( std::max( freeMemory, getTotalMemory()/2 ), freeMemory+freeSwap );
             if (m_allocatedPixmapsTotalMemory > memoryLimit) clipValue = (m_allocatedPixmapsTotalMemory - memoryLimit) / 2;
         }
         break;
@@ -446,7 +446,7 @@ AllocatedPixmap * DocumentPrivate::searchLowestPriorityPixmap( bool unloadableOn
         // Filter by observer
         if ( observer == 0 || p->observer == observer )
         {
-            const int distance = qAbs( p->page - currentViewportPage );
+            const int distance = std::abs( p->page - currentViewportPage );
             if ( maxDistance < distance && ( !unloadableOnly || p->observer->canUnloadPixmap( p->page ) ) )
             {
                 maxDistance = distance;
@@ -508,7 +508,7 @@ qulonglong DocumentPrivate::getFreeMemory( qulonglong *freeSwap )
     static qulonglong cachedValue = 0;
     static qulonglong cachedFreeSwap = 0;
 
-    if ( qAbs( lastUpdate.secsTo( QTime::currentTime() ) ) <= 2 )
+    if ( std::abs( lastUpdate.secsTo( QTime::currentTime() ) ) <= 2 )
     {
         if (freeSwap)
             *freeSwap = cachedFreeSwap;
@@ -1327,7 +1327,7 @@ void DocumentPrivate::sendGeneratorPixmapRequest()
     {
         AllocatedPixmap *pixmapToReplace = searchLowestPriorityPixmap( true );
         if ( pixmapToReplace )
-            maxDistance = qAbs( pixmapToReplace->page - currentViewportPage );
+            maxDistance = std::abs( pixmapToReplace->page - currentViewportPage );
     }
 
     // find a request
@@ -1358,7 +1358,7 @@ void DocumentPrivate::sendGeneratorPixmapRequest()
             m_pixmapRequestsStack.pop_back();
             delete r;
         }
-        else if ( !r->d->mForce && r->preload() && qAbs( r->pageNumber() - currentViewportPage ) >= maxDistance )
+        else if ( !r->d->mForce && r->preload() && std::abs( r->pageNumber() - currentViewportPage ) >= maxDistance )
         {
             m_pixmapRequestsStack.pop_back();
             //kDebug() << "Ignoring request that doesn't fit in cache";
@@ -2386,7 +2386,7 @@ Document::OpenResult Document::openDocument( const QString & docFile, const KUrl
 
     // no need to check for the existence of a synctex file, no parser will be
     // created if none exists
-    d->m_synctex_scanner = synctex_scanner_new_with_output_file( QFile::encodeName( docFile ), 0, 1);
+    d->m_synctex_scanner = synctex_scanner_new_with_output_file( QFile::encodeName( docFile ).constData(), 0, 1);
     if ( !d->m_synctex_scanner && QFile::exists(docFile + QLatin1String( "sync" ) ) )
     {
         d->loadSyncFile(docFile);
@@ -2998,7 +2998,7 @@ QVariant Document::metaData( const QString & key, const QVariant & option ) cons
         if (!ok) line = -1;
 
         // Use column == -1 for now.
-        if( synctex_display_query( d->m_synctex_scanner, QFile::encodeName(name), line, -1 ) > 0 )
+        if( synctex_display_query( d->m_synctex_scanner, QFile::encodeName(name).constData(), line, -1 ) > 0 )
         {
             synctex_node_t node;
             // For now use the first hit. Could possibly be made smarter
@@ -4678,7 +4678,7 @@ void DocumentPrivate::setPageBoundingBox( int page, const NormalizedRect& boundi
 
 void DocumentPrivate::calculateMaxTextPages()
 {
-    int multipliers = qMax(1, qRound(getTotalMemory() / 536870912.0)); // 512 MB
+    int multipliers = std::max(1, qRound(getTotalMemory() / 536870912.0)); // 512 MB
     switch (SettingsCore::memoryLevel())
     {
         case SettingsCore::EnumMemoryLevel::Low:

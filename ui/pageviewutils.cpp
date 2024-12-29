@@ -330,7 +330,7 @@ void PageViewMessage::computeSizeAndResize()
     {
         // determine details text rectangle
         const QRect detailsRect = computeTextRect( m_details, m_symbol.width() );
-        width = qMax( width, detailsRect.width() );
+        width = std::max( width, detailsRect.width() );
         height += detailsRect.height();
 
         // plus add a ~60% line spacing
@@ -342,7 +342,7 @@ void PageViewMessage::computeSizeAndResize()
     if ( ! m_symbol.isNull() )
     {
         width += 2 + m_symbol.width();
-        height = qMax( height, m_symbol.height() );
+        height = std::max( height, m_symbol.height() );
     }
 
     // resize widget
@@ -884,8 +884,8 @@ void PageViewToolBar::slotAnimate()
     // move currentPosition towards endPosition
     int dX = d->endPosition.x() - d->currentPosition.x(),
         dY = d->endPosition.y() - d->currentPosition.y();
-    dX = dX / 6 + qMax( -1, qMin( 1, dX) );
-    dY = dY / 6 + qMax( -1, qMin( 1, dY) );
+    dX = dX / 6 + std::max( -1, std::min( 1, dX) );
+    dY = dY / 6 + std::max( -1, std::min( 1, dY) );
     d->currentPosition.setX( d->currentPosition.x() + dX );
     d->currentPosition.setY( d->currentPosition.y() + dY );
 

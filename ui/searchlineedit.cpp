@@ -217,7 +217,7 @@ void SearchLineEdit::startSearch()
     m_changed = false;
     // search text if have more than 3 chars or else clear search
     QString thistext = text();
-    if ( thistext.length() >= qMax( m_minLength, 1 ) )
+    if ( thistext.length() >= std::max( m_minLength, 1 ) )
     {
         emit searchStarted();
         m_searchRunning = true;

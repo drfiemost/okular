@@ -116,7 +116,7 @@ class PickPointEngine : public AnnotatorEngine
             QRect boundrect = rect.geometry( (int)xScale, (int)yScale ).adjusted( 0, 0, 1, 1 );
             if ( m_block )
             {
-                const Okular::NormalizedRect tmprect( qMin( startpoint.x, point.x ), qMin( startpoint.y, point.y ), qMax( startpoint.x, point.x ), qMax( startpoint.y, point.y ) );
+                const Okular::NormalizedRect tmprect( std::min( startpoint.x, point.x ), std::min( startpoint.y, point.y ), std::max( startpoint.x, point.x ), std::max( startpoint.y, point.y ) );
                 boundrect |= tmprect.geometry( (int)xScale, (int)yScale ).adjusted( 0, 0, 1, 1 );
             }
             return boundrect;
@@ -132,7 +132,7 @@ class PickPointEngine : public AnnotatorEngine
                     QPen pen = painter->pen();
                     pen.setStyle( Qt::DashLine );
                     painter->setPen( pen );
-                    const Okular::NormalizedRect tmprect( qMin( startpoint.x, point.x ), qMin( startpoint.y, point.y ), qMax( startpoint.x, point.x ), qMax( startpoint.y, point.y ) );
+                    const Okular::NormalizedRect tmprect( std::min( startpoint.x, point.x ), std::min( startpoint.y, point.y ), std::max( startpoint.x, point.x ), std::max( startpoint.y, point.y ) );
                     const QRect realrect = tmprect.geometry( (int)xScale, (int)yScale );
                     painter->drawRect( realrect );
                     painter->setPen( origpen );
@@ -186,17 +186,17 @@ class PickPointEngine : public AnnotatorEngine
                         ta->style().setWidth( m_annotElement.attribute( "width" ).toDouble() );
                     }
                     //set boundary
-                    rect.left = qMin(startpoint.x,point.x);
-                    rect.top = qMin(startpoint.y,point.y);
-                    rect.right = qMax(startpoint.x,point.x);
-                    rect.bottom = qMax(startpoint.y,point.y);
+                    rect.left = std::min(startpoint.x,point.x);
+                    rect.top = std::min(startpoint.y,point.y);
+                    rect.right = std::max(startpoint.x,point.x);
+                    rect.bottom = std::max(startpoint.y,point.y);
                     kDebug().nospace() << "xyScale=" << xscale << "," << yscale;
                     static int padding = 2;
                     const QFontMetricsF mf(ta->textFont());
                     const QRectF rcf = mf.boundingRect( Okular::NormalizedRect( rect.left, rect.top, 1.0, 1.0 ).geometry( (int)pagewidth, (int)pageheight ).adjusted( padding, padding, -padding, -padding ),
                                                   Qt::AlignTop | Qt::AlignLeft | Qt::TextWordWrap, ta->contents() );
-                    rect.right = qMax(rect.right, rect.left+(rcf.width()+padding*2)/pagewidth);
-                    rect.bottom = qMax(rect.bottom, rect.top+(rcf.height()+padding*2)/pageheight);
+                    rect.right = std::max(rect.right, rect.left+(rcf.width()+padding*2)/pagewidth);
+                    rect.bottom = std::max(rect.bottom, rect.top+(rcf.height()+padding*2)/pageheight);
                     ta->window().setSummary( i18n( "Inline Note" ) );
                 }
             }
@@ -221,10 +221,10 @@ class PickPointEngine : public AnnotatorEngine
                 ann = sa;
                 sa->setStampIconName( iconName );
                 // set boundary
-                rect.left = qMin( startpoint.x, point.x );
-                rect.top = qMin( startpoint.y, point.y );
-                rect.right = qMax( startpoint.x, point.x );
-                rect.bottom = qMax( startpoint.y, point.y );
+                rect.left = std::min( startpoint.x, point.x );
+                rect.top = std::min( startpoint.y, point.y );
+                rect.right = std::max( startpoint.x, point.x );
+                rect.bottom = std::max( startpoint.y, point.y );
                 const QRectF rcf = rect.geometry( (int)xscale, (int)yscale );
                 const int ml = ( rcf.bottomRight() - rcf.topLeft() ).toPoint().manhattanLength();
                 if ( ml <= QApplication::startDragDistance() )
@@ -260,10 +260,10 @@ class PickPointEngine : public AnnotatorEngine
                 if ( m_annotElement.hasAttribute( "innerColor" ) )
                     ga->setGeometricalInnerColor( QColor( m_annotElement.attribute( "innerColor" ) ) );
                 //set boundary
-                rect.left = qMin( startpoint.x, point.x );
-                rect.top = qMin( startpoint.y, point.y );
-                rect.right = qMax( startpoint.x, point.x );
-                rect.bottom = qMax( startpoint.y, point.y );
+                rect.left = std::min( startpoint.x, point.x );
+                rect.top = std::min( startpoint.y, point.y );
+                rect.right = std::max( startpoint.x, point.x );
+                rect.bottom = std::max( startpoint.y, point.y );
             }
 
             m_creationCompleted = false;

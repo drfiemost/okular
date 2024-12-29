@@ -90,7 +90,7 @@ static bool segmentsOverlap(double left1, double right1, double left2, double ri
         double length1 = right1 - left1,
                length2 = right2 - left2;
 
-        return overlap * 100 >= threshold * qMin(length1, length2);
+        return overlap * 100 >= threshold * std::min(length1, length2);
     }
 
     return false;
@@ -442,8 +442,8 @@ RegularAreaRect * TextPage::textArea ( TextSelection * sel) const
         third = end;
         third.left = second.left = 0;
         second.bottom = end.top;
-        int selMax = qMax( sel->itB(), sel->itE() );
-        for ( it = qMin( sel->itB(), sel->itE() ); it <= selMax; ++it )
+        int selMax = std::max( sel->itB(), sel->itE() );
+        for ( it = std::min( sel->itB(), sel->itE() ); it <= selMax; ++it )
         {
             tmp = *d->m_words[ it ]->area();
             if ( tmp.intersects( &first ) || tmp.intersects( &second ) || tmp.intersects( &third ) )
@@ -878,7 +878,7 @@ RegularAreaRect* TextPagePrivate::findTextInternalForward( int searchID, const Q
             offset_begin = offset;
         }
 
-        int min=qMin(queryLeft,len-offset);
+        int min=std::min(queryLeft,len-offset);
         {
 #ifdef DEBUG_TEXTPAGE
             kDebug(OkularDebug) << str.midRef(offset, min) << ":" << _query.midRef(j, min);
@@ -994,7 +994,7 @@ RegularAreaRect* TextPagePrivate::findTextInternalBackward( int searchID, const 
             offset_begin = offset;
         }
 
-        int min=qMin(queryLeft,offset);
+        int min=std::min(queryLeft,offset);
         {
 #ifdef DEBUG_TEXTPAGE
             kDebug(OkularDebug) << str.midRef(offset-min, min) << " : " << _query.midRef(j-min, min);

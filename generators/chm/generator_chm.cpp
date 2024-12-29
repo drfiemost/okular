@@ -270,7 +270,7 @@ void CHMGenerator::generatePixmap( Okular::PixmapRequest * request )
 
     userMutex()->lock();
     QString url= m_pageUrl[request->pageNumber()];
-    int zoom = qRound( qMax( static_cast<double>(requestWidth)/static_cast<double>(request->page()->width())
+    int zoom = qRound( std::max( static_cast<double>(requestWidth)/static_cast<double>(request->page()->width())
         , static_cast<double>(requestHeight)/static_cast<double>(request->page()->height())
         ) ) * 100;
 

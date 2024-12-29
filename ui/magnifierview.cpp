@@ -142,10 +142,10 @@ void MagnifierView::requestPixmap()
     const double rect_width = (nrect.right - nrect.left) * 0.5,
                  rect_height = (nrect.bottom - nrect.top) * 0.5;
 
-    const double top = qMax(nrect.top - rect_height, 0.0);
-    const double bottom = qMin(nrect.bottom + rect_height, 1.0);
-    const double left = qMax(nrect.left - rect_width, 0.0);
-    const double right = qMin(nrect.right + rect_width, 1.0);
+    const double top = std::max(nrect.top - rect_height, 0.0);
+    const double bottom = std::min(nrect.bottom + rect_height, 1.0);
+    const double left = std::max(nrect.left - rect_width, 0.0);
+    const double right = std::min(nrect.right + rect_width, 1.0);
 
     p->setNormalizedRect( Okular::NormalizedRect(left, top, right, bottom) );
     requestedPixmaps.push_back( p );

@@ -47,10 +47,10 @@ Okular::NormalizedRect buildBoundingRectangleForButtons( const QList<Okular::For
 
     foreach( FormFieldButton* formButton, formButtons )
     {
-        left = qMin<double>( left, formButton->rect().left );
-        top = qMin<double>( top, formButton->rect().top );
-        right = qMax<double>( right, formButton->rect().right );
-        bottom = qMax<double>( bottom, formButton->rect().bottom );
+        left = std::min<double>( left, formButton->rect().left );
+        top = std::min<double>( top, formButton->rect().top );
+        right = std::max<double>( right, formButton->rect().right );
+        bottom = std::max<double>( bottom, formButton->rect().bottom );
     }
     Okular::NormalizedRect boundingRect( left, top, right, bottom );
     return boundingRect;
@@ -204,10 +204,10 @@ Okular::NormalizedPoint TranslateAnnotationCommand::minusDelta()
 Okular::NormalizedRect TranslateAnnotationCommand::translateBoundingRectangle( const Okular::NormalizedPoint & delta )
 {
     Okular::NormalizedRect annotBoundingRect = m_annotation->boundingRectangle();
-    double left = qMin<double>( annotBoundingRect.left, annotBoundingRect.left + delta.x );
-    double right = qMax<double>( annotBoundingRect.right, annotBoundingRect.right + delta.x );
-    double top = qMin<double>( annotBoundingRect.top, annotBoundingRect.top + delta.y );
-    double bottom = qMax<double>( annotBoundingRect.bottom, annotBoundingRect.bottom + delta.y );
+    double left = std::min<double>( annotBoundingRect.left, annotBoundingRect.left + delta.x );
+    double right = std::max<double>( annotBoundingRect.right, annotBoundingRect.right + delta.x );
+    double top = std::min<double>( annotBoundingRect.top, annotBoundingRect.top + delta.y );
+    double bottom = std::max<double>( annotBoundingRect.bottom, annotBoundingRect.bottom + delta.y );
     Okular::NormalizedRect boundingRect( left, top, right, bottom );
     return boundingRect;
 }

@@ -327,7 +327,7 @@ void ThumbnailList::notifyCurrentPageChanged( int previousPage, int currentPage 
             d->m_selected->setSelected( true );
             if ( Okular::Settings::syncThumbnailsViewport() )
             {
-                int yOffset = qMax( viewport()->height() / 4, d->m_selected->height() / 2 );
+                int yOffset = std::max( viewport()->height() / 4, d->m_selected->height() / 2 );
                 ensureVisible( 0, d->m_selected->pos().y() + d->m_selected->height()/2, 0, yOffset );
             }
             break;

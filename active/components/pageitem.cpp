@@ -218,9 +218,9 @@ void PageItem::goToBookmark(const QString &bookmark)
     //Are we in a flickable?
     if (m_flickable) {
         //normalizedX is a proportion, so contentX will be the difference between document and viewport times normalizedX
-        m_flickable.data()->setProperty("contentX", qMax((qreal)0, width() - m_flickable.data()->width()) * viewPort.rePos.normalizedX);
+        m_flickable.data()->setProperty("contentX", std::max((qreal)0, width() - m_flickable.data()->width()) * viewPort.rePos.normalizedX);
 
-        m_flickable.data()->setProperty("contentY", qMax((qreal)0, height() - m_flickable.data()->height()) * viewPort.rePos.normalizedY);
+        m_flickable.data()->setProperty("contentY", std::max((qreal)0, height() - m_flickable.data()->height()) * viewPort.rePos.normalizedY);
     }
 }
 
@@ -232,8 +232,8 @@ QPointF PageItem::bookmarkPosition(const QString &bookmark) const
         return QPointF(-1, -1);
     }
 
-    return QPointF(qMax((qreal)0, width() - m_flickable.data()->width()) * viewPort.rePos.normalizedX,
-                   qMax((qreal)0, height() - m_flickable.data()->height()) * viewPort.rePos.normalizedY);
+    return QPointF(std::max((qreal)0, width() - m_flickable.data()->width()) * viewPort.rePos.normalizedX,
+                   std::max((qreal)0, height() - m_flickable.data()->height()) * viewPort.rePos.normalizedY);
 }
 
 void PageItem::setBookmarkAtPos(qreal x, qreal y)

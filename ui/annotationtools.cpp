@@ -121,16 +121,16 @@ QRect SmoothPathEngine::event( EventType type, Button button, double nX, double 
             // update total rect
             double dX = 2.0 / (double)xScale;
             double dY = 2.0 / (double)yScale;
-            totalRect.left = qMin( totalRect.left, nX - dX );
-            totalRect.top = qMin( totalRect.top, nY - dY );
-            totalRect.right = qMax( nX + dX, totalRect.right );
-            totalRect.bottom = qMax( nY + dY, totalRect.bottom );
+            totalRect.left = std::min( totalRect.left, nX - dX );
+            totalRect.top = std::min( totalRect.top, nY - dY );
+            totalRect.right = std::max( nX + dX, totalRect.right );
+            totalRect.bottom = std::max( nY + dY, totalRect.bottom );
             // paint the difference to previous full rect
             Okular::NormalizedRect incrementalRect;
-            incrementalRect.left = qMin( nextPoint.x, lastPoint.x ) - dX;
-            incrementalRect.right = qMax( nextPoint.x, lastPoint.x ) + dX;
-            incrementalRect.top = qMin( nextPoint.y, lastPoint.y ) - dY;
-            incrementalRect.bottom = qMax( nextPoint.y, lastPoint.y ) + dY;
+            incrementalRect.left = std::min( nextPoint.x, lastPoint.x ) - dX;
+            incrementalRect.right = std::max( nextPoint.x, lastPoint.x ) + dX;
+            incrementalRect.top = std::min( nextPoint.y, lastPoint.y ) - dY;
+            incrementalRect.bottom = std::max( nextPoint.y, lastPoint.y ) + dY;
             lastPoint = nextPoint;
             return incrementalRect.geometry( (int)xScale, (int)yScale );
         //}

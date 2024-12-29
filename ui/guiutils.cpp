@@ -180,7 +180,7 @@ QPixmap loadStamp( const QString& _name, const QSize& size, int iconSize )
     QPixmap pixmap;
     const KIconLoader * il = iconLoader();
     QString path;
-    const int minSize = iconSize > 0 ? iconSize : qMin( size.width(), size.height() );
+    const int minSize = iconSize > 0 ? iconSize : std::min( size.width(), size.height() );
     pixmap = il->loadIcon( name, KIconLoader::User, minSize, KIconLoader::DefaultState, QStringList(), &path, true );
     if ( path.isEmpty() )
         pixmap = il->loadIcon( name, KIconLoader::NoGroup, minSize );

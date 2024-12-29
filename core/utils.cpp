@@ -141,8 +141,8 @@ QSizeF Utils::realDpi(QWidget* widgetOnScreen)
                 }
                 if (szMM.width() > 0 && szMM.height() > 0 && outputRect.width() > 0 && outputRect.height() > 0
                     && selectedOutput->edid()
-                    && qAbs(static_cast<int>(selectedOutput->edid()->width()*10) - szMM.width()) < 10
-                    && qAbs(static_cast<int>(selectedOutput->edid()->height()*10) - szMM.height()) < 10)
+                    && std::abs(static_cast<int>(selectedOutput->edid()->width()*10) - szMM.width()) < 10
+                    && std::abs(static_cast<int>(selectedOutput->edid()->height()*10) - szMM.height()) < 10)
                 {
                     // sizes in EDID seem to be consistent
                     QSizeF res(static_cast<qreal>(outputRect.width())*25.4/szMM.width(),
@@ -152,7 +152,7 @@ QSizeF Utils::realDpi(QWidget* widgetOnScreen)
                         kDebug() << "Output is vertical, transposing DPI rect";
                         res.transpose();
                     }
-                    if (qAbs(res.width() - res.height()) / qMin(res.height(), res.width()) < 0.05) {
+                    if (std::abs(res.width() - res.height()) / std::min(res.height(), res.width()) < 0.05) {
                         return res;
                     } else {
                         kDebug() << "KScreen calculation returned a non square dpi." << res << ". Falling back";
@@ -173,14 +173,14 @@ QSizeF Utils::realDpi(QWidget* widgetOnScreen)
     // this is also fallback for LibKScreen branch if KScreen::Output
     // for particular widget was not found
     QSizeF res = QSizeF(realDpiX(), realDpiY());
-    if (qAbs(res.width() - res.height()) / qMin(res.height(), res.width()) < 0.05) {
+    if (std::abs(res.width() - res.height()) / std::min(res.height(), res.width()) < 0.05) {
         return res;
     } else {
         kDebug() << "QDesktopWidget calculation returned a non square dpi." << res << ". Falling back";
     }
 
     res = QSizeF(dpiX(), dpiY());
-    if (qAbs(res.width() - res.height()) / qMin(res.height(), res.width()) < 0.05) {
+    if (std::abs(res.width() - res.height()) / std::min(res.height(), res.width()) < 0.05) {
         return res;
     } else {
         kDebug() << "QX11Info returned a non square dpi." << res << ". Falling back";

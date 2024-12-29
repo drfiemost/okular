@@ -197,7 +197,7 @@ QSize SidebarDelegate::sizeHint( const QStyleOptionViewItem &option, const QMode
     if ( m_showText )
     {
         QRect fontBoundaries = QFontMetrics( option.font ).boundingRect( index.data( Qt::DisplayRole ).toString() );
-        baseSize.setWidth( qMax( fontBoundaries.width(), baseSize.width() ) );
+        baseSize.setWidth( std::max( fontBoundaries.width(), baseSize.width() ) );
         baseSize.setHeight( baseSize.height() + fontBoundaries.height() + ITEM_PADDING );
     }
     return baseSize + QSize( ITEM_MARGIN_LEFT + ITEM_MARGIN_RIGHT, ITEM_MARGIN_TOP + ITEM_MARGIN_BOTTOM );
@@ -443,8 +443,8 @@ void Sidebar::Private::adjustListSize( bool recalc, bool expand )
     list->setMinimumHeight( itemsHeight + list->frameWidth() * 2 );
     int curWidth = list->minimumWidth();
     int newWidth = expand
-                   ? qMax( bottomElemRect.width() + list->frameWidth() * 2, curWidth )
-                   : qMin( bottomElemRect.width() + list->frameWidth() * 2, curWidth );
+                   ? std::max( bottomElemRect.width() + list->frameWidth() * 2, curWidth )
+                   : std::min( bottomElemRect.width() + list->frameWidth() * 2, curWidth );
     list->setFixedWidth( newWidth );
 }
 

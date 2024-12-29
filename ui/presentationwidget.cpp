@@ -486,7 +486,7 @@ bool PresentationWidget::canUnloadPixmap( int pageNumber ) const
     else
     {
         // can unload all pixmaps except for the currently visible one, previous and next
-        return qAbs(pageNumber - m_frameIndex) <= 1;
+        return std::abs(pageNumber - m_frameIndex) <= 1;
     }
 }
 
@@ -1275,7 +1275,7 @@ void PresentationWidget::startAutoChangeTimer()
         if ( pageDuration < 0.0 )
             secs = Okular::SettingsCore::slidesAdvanceTime();
         else if ( m_advanceSlides )
-            secs = qMin<double>( pageDuration, Okular::SettingsCore::slidesAdvanceTime() );
+            secs = std::min<double>( pageDuration, Okular::SettingsCore::slidesAdvanceTime() );
         else
             secs = pageDuration;
 

@@ -472,8 +472,8 @@ QImage KDjVu::Private::generateImageTile( ddjvu_page_t *djvupage, int& res,
     ddjvu_rect_t renderrect;
     renderrect.x = row * xdelta;
     renderrect.y = col * ydelta;
-    int realwidth = qMin( width - renderrect.x, xdelta );
-    int realheight = qMin( height - renderrect.y, ydelta );
+    int realwidth = std::min( width - renderrect.x, xdelta );
+    int realheight = std::min( height - renderrect.y, ydelta );
     renderrect.w = realwidth;
     renderrect.h = realheight;
 #ifdef KDJVU_DEBUG
@@ -529,7 +529,7 @@ void KDjVu::Private::fillBookmarksRecurse( QDomDocument& maindoc, QDomNode& curn
         return;
 
     int l = miniexp_length( exp );
-    for ( int i = qMax( offset, 0 ); i < l; ++i )
+    for ( int i = std::max( offset, 0 ); i < l; ++i )
     {
         miniexp_t cur = miniexp_nth( i, exp );
 
@@ -986,7 +986,7 @@ QImage KDjVu::image( int page, int width, int height, int rotation )
             {
                 p.drawImage( row * xdelta, col * ydelta, tempp );
             }
-            res = qMin( tmpres, res );
+            res = std::min( tmpres, res );
         }
         p.end();
     }

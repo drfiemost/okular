@@ -421,7 +421,7 @@ static QBrush parseRscRefColorForBrush( const QString &data )
         kDebug(XpsDebug) << "Reference" << data;
         return QBrush();
     } else {
-        return QBrush( hexToRgba( data.toLatin1() ) );
+        return QBrush( hexToRgba( data.toLatin1().constData() ) );
     }
 }
 
@@ -435,7 +435,7 @@ static QPen parseRscRefColorForPen( const QString &data )
         kDebug(XpsDebug) << "Reference" << data;
         return QPen();
     } else {
-        return QPen( hexToRgba( data.toLatin1() ) );
+        return QPen( hexToRgba( data.toLatin1().constData() ) );
     }
 }
 
@@ -1332,7 +1332,7 @@ void XpsHandler::processEndElement( XpsRenderNode &node )
         processStroke( node );
     } else if (node.name == "SolidColorBrush") {
         //TODO Ignoring opacity, x:key
-        node.data = qVariantFromValue( QBrush( QColor( hexToRgba( node.attributes.value( "Color" ).toLatin1() ) ) ) );
+        node.data = qVariantFromValue( QBrush( QColor( hexToRgba( node.attributes.value( "Color" ).toLatin1().constData() ) ) ) );
     } else if (node.name == "ImageBrush") {
         processImageBrush( node );
     } else if (node.name == "ImageBrush.Transform") {
@@ -1360,7 +1360,7 @@ void XpsHandler::processEndElement( XpsRenderNode &node )
             qgrad->setCenter( center );
             qgrad->setFocalPoint( origin );
             // TODO what in case of different radii?
-            qgrad->setRadius( qMin( radiusX, radiusY ) );
+            qgrad->setRadius( std::min( radiusX, radiusY ) );
             applySpreadStyleToQGradient( node.attributes.value( "SpreadMethod" ), qgrad );
             node.data = qVariantFromValue( QBrush( *qgrad ) );
             delete qgrad;
@@ -1369,7 +1369,7 @@ void XpsHandler::processEndElement( XpsRenderNode &node )
         QList<XpsGradient> gradients;
         Q_FOREACH ( const XpsRenderNode &child, node.children ) {
             double offset = child.attributes.value( "Offset" ).toDouble();
-            QColor color = hexToRgba( child.attributes.value( "Color" ).toLatin1() );
+            QColor color = hexToRgba( child.attributes.value( "Color" ).toLatin1().constData() );
             gradients.append( XpsGradient( offset, color ) );
         }
         preprocessXpsGradients( gradients );
@@ -1382,7 +1382,7 @@ void XpsHandler::processEndElement( XpsRenderNode &node )
         QList<XpsGradient> gradients;
         Q_FOREACH ( const XpsRenderNode &child, node.children ) {
             double offset = child.attributes.value( "Offset" ).toDouble();
-            QColor color = hexToRgba( child.attributes.value( "Color" ).toLatin1() );
+            QColor color = hexToRgba( child.attributes.value( "Color" ).toLatin1().constData() );
             gradients.append( XpsGradient( offset, color ) );
         }
         preprocessXpsGradients( gradients );

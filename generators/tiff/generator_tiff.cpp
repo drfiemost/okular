@@ -398,9 +398,9 @@ bool TIFFGenerator::print( QPrinter& printer )
                                                          document()->currentPage() + 1,
                                                          document()->bookmarkedPageList() );
 
-    for ( tdir_t i = 0; i < pageList.count(); ++i )
+    for ( int j = 0; j < pageList.count(); ++j )
     {
-        if ( !TIFFSetDirectory( d->tiff, mapPage( pageList[i] - 1 ) ) )
+        if ( !TIFFSetDirectory( d->tiff, mapPage( pageList[j] - 1 ) ) )
             continue;
 
         if ( TIFFGetField( d->tiff, TIFFTAG_IMAGEWIDTH, &width ) != 1 ||
@@ -423,7 +423,7 @@ bool TIFFGenerator::print( QPrinter& printer )
             }
         }
 
-        if ( i != 0 )
+        if ( j != 0 )
             printer.newPage();
 
         QSize targetSize = printer.pageRect().size();

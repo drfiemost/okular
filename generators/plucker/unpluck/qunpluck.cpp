@@ -130,7 +130,7 @@ bool QUnpluck::open( const QString &fileName )
         return false;
     }
 
-    bool status = true;
+    [[maybe_unused]] bool status = true;
 
     mInfo.insert( "name", plkr_GetName( mDocument ) );
     mInfo.insert( "title", plkr_GetTitle( mDocument ) );
@@ -355,7 +355,7 @@ void QUnpluck::DoStyle( Context* context, int style, bool start )
                 format.setFontFamily( QString::fromLatin1( "Courier New,courier" ) );
                 break;
         }
-        format.setFontPointSize( qMax( pointSize, 1 ) );
+        format.setFontPointSize( std::max( pointSize, 1 ) );
         context->cursor->setCharFormat( format );
     } else {
         if ( !context->stack.isEmpty() )
@@ -527,22 +527,22 @@ bool QUnpluck::TranscribeTableRecord
     unsigned char*  ptr = &bytes[24];
     unsigned char*  end;
 //    char*           align_names[] = { "left", "right", "center" };
-    bool            in_row = false;
-    int             cols;
+    [[maybe_unused]] bool            in_row = false;
+    [[maybe_unused]] int             cols;
     int             size;
-    int             rows;
-    int             border;
+    [[maybe_unused]] int             rows;
+    [[maybe_unused]] int             border;
     int             record_id;
-    int             align;
+    [[maybe_unused]] int             align;
     int             text_len;
-    int             colspan;
-    int             rowspan;
+    [[maybe_unused]] int             colspan;
+    [[maybe_unused]] int             rowspan;
     int             font = 0;
     int             style = 0;
     int             fctype;
     int             fclen;
-    long            border_color;
-    long            link_color;
+    [[maybe_unused]] long            border_color;
+    [[maybe_unused]] long            link_color;
 
     size = (bytes[8] << 8) + bytes[9];
     cols = (bytes[10] << 8) + bytes[11];
@@ -670,11 +670,11 @@ bool QUnpluck::TranscribeTextRecord
     int             data_len;
     int             current_font;
     int             record_index;
-    int             current_alignment;
-    int             current_left_margin;
-    int             current_right_margin;
+    [[maybe_unused]] int             current_alignment;
+    [[maybe_unused]] int             current_left_margin;
+    [[maybe_unused]] int             current_right_margin;
     int             nparagraphs;
-    long            current_color;
+    [[maybe_unused]] long            current_color;
 
     record_index = id;
 
@@ -906,7 +906,7 @@ bool QUnpluck::TranscribeTextRecord
                         else if (*ptr == 11) {
                             format.setVerticalAlignment( QTextCharFormat::AlignSuperScript );
                         }
-                        format.setFontPointSize( qMax( pointSize, 1 ) );
+                        format.setFontPointSize( std::max( pointSize, 1 ) );
 
                         context->cursor->setCharFormat( format );
 

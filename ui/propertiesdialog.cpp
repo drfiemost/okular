@@ -120,7 +120,7 @@ PropertiesDialog::PropertiesDialog(QWidget *parent, Okular::Document *doc)
         layout->addRow( new QLabel( i18n( "%1:", titleString ) ), value);
 
         // refine maximum width of 'value' labels
-        valMaxWidth = qMax( valMaxWidth, fontMetrics().width( valueString ) );
+        valMaxWidth = std::max( valMaxWidth, fontMetrics().width( valueString ) );
     }
 
     // FONTS
@@ -163,10 +163,10 @@ PropertiesDialog::PropertiesDialog(QWidget *parent, Okular::Document *doc)
     // current width: left columnt + right column + dialog borders
     int width = layout->minimumSize().width() + valMaxWidth + 2 * marginHint() + spacingHint() + 30;
     if ( page2Layout )
-        width = qMax( width, page2Layout->sizeHint().width() + marginHint() + spacingHint() + 31 );
+        width = std::max( width, page2Layout->sizeHint().width() + marginHint() + spacingHint() + 31 );
     // stay inside the 2/3 of the screen width
     QRect screenContainer = KGlobalSettings::desktopGeometry( this );
-    width = qMin( width, 2*screenContainer.width()/3 );
+    width = std::min( width, 2*screenContainer.width()/3 );
     resize(width, 1);
 
     connect( pageWidget(), SIGNAL(currentPageChanged(KPageWidgetItem*,KPageWidgetItem*)),

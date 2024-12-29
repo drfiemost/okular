@@ -46,5 +46,5 @@ double SimplePageSize::zoomToFitInto(const SimplePageSize &target) const
   double z1 = target.width() / pageWidth;
   double z2 = target.height() / pageHeight;
 
-  return qMin(z1,z2);
+  return std::min(z1,z2);
 }

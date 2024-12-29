@@ -125,7 +125,7 @@ bool GSGenerator::print( QPrinter& printer )
         return false;
 
     SpectreExporter *exporter = spectre_exporter_new( m_internalDocument, exportFormat );
-    SpectreStatus exportStatus = spectre_exporter_begin( exporter, tf.fileName().toAscii() );
+    SpectreStatus exportStatus = spectre_exporter_begin( exporter, tf.fileName().toAscii().constData() );
 
     int i = 0;
     while ( i < pageList.count() && exportStatus == SPECTRE_STATUS_SUCCESS )
@@ -162,7 +162,7 @@ bool GSGenerator::loadDocument( const QString & fileName, QVector< Okular::Page 
     cache_AAgfx = documentMetaData("GraphicsAntialias", true).toBool();
 
     m_internalDocument = spectre_document_new();
-    spectre_document_load(m_internalDocument, QFile::encodeName(fileName));
+    spectre_document_load(m_internalDocument, QFile::encodeName(fileName).constData());
     const SpectreStatus loadStatus = spectre_document_status(m_internalDocument);
     if (loadStatus != SPECTRE_STATUS_SUCCESS)
     {
@@ -243,12 +243,12 @@ void GSGenerator::generatePixmap( Okular::PixmapRequest * req )
     if (req->page()->rotation() == Okular::Rotation90 ||
         req->page()->rotation() == Okular::Rotation270)
     {
-        gsreq.magnify = qMax( (double)req->height() / req->page()->width(),
+        gsreq.magnify = std::max( (double)req->height() / req->page()->width(),
                               (double)req->width() / req->page()->height() );
     }
     else
     {
-        gsreq.magnify = qMax( (double)req->width() / req->page()->width(),
+        gsreq.magnify = std::max( (double)req->width() / req->page()->width(),
                               (double)req->height() / req->page()->height() );
     }
     gsreq.request = req;

@@ -114,7 +114,7 @@ class FileKeeper
         void open( const QString & path )
         {
             if ( !m_handle )
-                m_handle = std::fopen( QFile::encodeName( path ), "r" );
+                m_handle = std::fopen( QFile::encodeName( path ).constData(), "r" );
         }
 
         void close()
@@ -361,7 +361,7 @@ m_cliPresentation(false), m_cliPrint(false), m_embedMode(detectEmbedMode(parentW
     connect( m_document->bookmarkManager(), SIGNAL(openUrl(KUrl)), this, SLOT(openUrlFromBookmarks(KUrl)) );
     connect( m_document, SIGNAL(close()), this, SLOT(close()) );
 
-    if ( parent && parent->metaObject()->indexOfSlot( QMetaObject::normalizedSignature( "slotQuit()" ) ) != -1 )
+    if ( parent && parent->metaObject()->indexOfSlot( QMetaObject::normalizedSignature( "slotQuit()" ).constData() ) != -1 )
         connect( m_document, SIGNAL(quit()), parent, SLOT(slotQuit()) );
     else
         connect( m_document, SIGNAL(quit()), this, SLOT(cannotQuit()) );

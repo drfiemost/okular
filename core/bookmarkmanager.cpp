@@ -66,10 +66,10 @@ static inline bool documentViewportFuzzyCompare( const DocumentViewport &vp1, co
     if ( !equal )
         return false;
 
-    if ( qAbs(vp1.rePos.normalizedX-vp2.rePos.normalizedX) >= 0.000001 )
+    if ( std::abs(vp1.rePos.normalizedX-vp2.rePos.normalizedX) >= 0.000001 )
         return false;
 
-    if ( qAbs(vp1.rePos.normalizedY-vp2.rePos.normalizedY) >= 0.000001 )
+    if ( std::abs(vp1.rePos.normalizedY-vp2.rePos.normalizedY) >= 0.000001 )
         return false;
 
     return true;
@@ -214,7 +214,7 @@ void BookmarkManager::Private::_o_changed( const QString & groupAddress, const Q
         // set the same url again, so we reload the information we have about it
         q->setUrl( referurl );
         // then notify the observers about the changes in the bookmarks
-        for ( int i = 0; i < qMax( oldUrlBookmarks.size(), urlBookmarks.size() ); i++ )
+        for ( int i = 0; i < std::max( oldUrlBookmarks.size(), urlBookmarks.size() ); i++ )
         {
             bool oldContains = oldUrlBookmarks.contains(i) && oldUrlBookmarks[i] > 0;
             bool curContains = urlBookmarks.contains(i) && urlBookmarks[i] > 0;
@@ -567,7 +567,7 @@ void BookmarkManager::removeBookmarks( const KUrl& referurl, const KBookmark::Li
 
     if ( referurl == d->document->m_url )
     {
-        for ( int i = 0; i < qMax( oldUrlBookmarks.size(), d->urlBookmarks.size() ); i++ )
+        for ( int i = 0; i < std::max( oldUrlBookmarks.size(), d->urlBookmarks.size() ); i++ )
         {
             bool oldContains = oldUrlBookmarks.contains(i) && oldUrlBookmarks[i] > 0;
             bool curContains = d->urlBookmarks.contains(i) && d->urlBookmarks[i] > 0;

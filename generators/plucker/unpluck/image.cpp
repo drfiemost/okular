@@ -149,10 +149,10 @@ bool TranscribePalmImageToJPEG
     unsigned int    height;
     unsigned int    bytes_per_row;
     unsigned int    flags;
-    unsigned int    next_depth_offset;
+    [[maybe_unused]] unsigned int    next_depth_offset;
     unsigned int    bits_per_pixel;
-    unsigned int    version;
-    unsigned int    transparent_index;
+    [[maybe_unused]] unsigned int    version;
+    [[maybe_unused]] unsigned int    transparent_index;
     unsigned int    compression_type;
     unsigned int    i;
     unsigned int    j;
@@ -164,7 +164,7 @@ bool TranscribePalmImageToJPEG
     unsigned int    palm_green_bits = 0;
     unsigned int    palm_blue_bits = 0;
     unsigned char*  palm_ptr;
-    unsigned char*  x_ptr;
+    [[maybe_unused]] unsigned char*  x_ptr;
     unsigned char*  imagedata = 0;
     unsigned char*  inbyte;
     unsigned char*  rowbuf;
@@ -250,7 +250,7 @@ bool TranscribePalmImageToJPEG
 
     QTemporaryFile tempFile;
     tempFile.open();
-    FILE *outfile = fopen( QFile::encodeName( tempFile.fileName() ), "w" );
+    FILE *outfile = fopen( QFile::encodeName( tempFile.fileName() ).constData(), "w" );
     if ( !outfile )
       return false;
 
@@ -437,7 +437,7 @@ bool TranscribeMultiImageRecord
     cols = (bytes[8] << 8) + bytes[9];
     rows = (bytes[10] << 8) + bytes[11];
 
-    cells = (PALMPIX *) calloc (cols * rows, sizeof (PALMPIX));
+    cells = (PALMPIX *) std::calloc (cols * rows, sizeof (PALMPIX));
 
     height = 0;
     for (y = 0; y < rows; y++) {
@@ -449,7 +449,7 @@ bool TranscribeMultiImageRecord
             ptr += 2;
             pbytes = plkr_GetRecordBytes (doc, record_id, &plen, &ptype);
             if (pbytes == NULL) {
-                free (cells);
+                std::free (cells);
                 return false;
             }
 
@@ -472,7 +472,7 @@ bool TranscribeMultiImageRecord
             compression_type = acell->compression_type;
 
             if (acell->flags & PALM_HAS_COLORMAP_FLAG) {
-                free (cells);
+                std::free (cells);
                 return false;
             }
 
@@ -494,7 +494,9 @@ bool TranscribeMultiImageRecord
     }
 
     outlen = bytes_per_row * height + offset;
-    outbytes = (unsigned char *) malloc (outlen);
+    outbytes = (unsigned char *) std::malloc (outlen);
+    if (!outbytes)
+        return false;
     outptr = outbytes;
 
     *outptr++ = width >> 8;
@@ -542,8 +544,8 @@ bool TranscribeMultiImageRecord
 
     status = TranscribePalmImageToJPEG (outbytes, image);
 
-    free (outbytes);
-    free (cells);
+    std::free (outbytes);
+    std::free (cells);
 
     return status;
 }

@@ -177,19 +177,19 @@ NormalizedRect NormalizedRect::operator| (const NormalizedRect & r) const
 {
 	NormalizedRect ret;
  // todo !       
-	ret.left=qMin(left,r.left);
-        ret.top=qMin(top,r.top);
-        ret.bottom=qMax(bottom,r.bottom);
-        ret.right=qMax(right,r.right);
+	ret.left=std::min(left,r.left);
+        ret.top=std::min(top,r.top);
+        ret.bottom=std::max(bottom,r.bottom);
+        ret.right=std::max(right,r.right);
 	return ret;
 }
 
 NormalizedRect& NormalizedRect::operator|= (const NormalizedRect & r)
 {
-    left = qMin( left, r.left );
-    top = qMin( top, r.top );
-    bottom = qMax( bottom, r.bottom );
-    right = qMax( right, r.right );
+    left = std::min( left, r.left );
+    top = std::min( top, r.top );
+    bottom = std::max( bottom, r.bottom );
+    right = std::max( right, r.right );
     return *this;
 }
 
@@ -199,10 +199,10 @@ NormalizedRect NormalizedRect::operator&( const NormalizedRect & r ) const
         return NormalizedRect();
 
     NormalizedRect ret;
-    ret.left = qMax( left, r.left );
-    ret.top = qMax( top, r.top );
-    ret.bottom = qMin( bottom, r.bottom );
-    ret.right = qMin( right, r.right );
+    ret.left = std::max( left, r.left );
+    ret.top = std::max( top, r.top );
+    ret.bottom = std::min( bottom, r.bottom );
+    ret.right = std::min( right, r.right );
     return ret;
 }
 

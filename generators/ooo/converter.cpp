@@ -426,7 +426,7 @@ bool Converter::convertTable( const QDomElement &element )
         columnElement = columnElement.nextSiblingElement();
       }
 
-      columnCounter = qMax( columnCounter, counter );
+      columnCounter = std::max( columnCounter, counter );
     } else if ( el.tagName() == QLatin1String( "table-header-rows" ) ) {
       enqueueNodeList( nodeQueue, el.childNodes() );
     }
