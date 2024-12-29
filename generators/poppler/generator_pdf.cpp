@@ -434,6 +434,14 @@ Okular::Action* createLinkFromPopplerLink(const Poppler::Link *popplerLink)
             link = movieAction;
         }
         break;
+
+        case Poppler::Link::OCGState:
+#ifdef HAVE_POPPLER_0_50
+            link = new Okular::BackendOpaqueAction();
+            link->setNativeId( QVariant::fromValue( static_cast<const Poppler::LinkOCGState*>( popplerLink ) ) );
+            deletePopplerLink = false;
+#endif
+        break;
     }
 
     if ( deletePopplerLink )
@@ -815,7 +823,14 @@ Okular::FontInfo::List PDFGenerator::fontsForPage( int page )
 
     QList<Poppler::FontInfo> fonts;
     userMutex()->lock();
-    pdfdoc->scanForFonts( 1, &fonts );
+
+    {
+        Poppler::FontIterator* it =pdfdoc->newFontIterator(page);
+        if (it->hasNext()) {
+            fonts = it->next();
+        }
+        delete it;
+    }
     userMutex()->unlock();
 
     foreach (const Poppler::FontInfo &font, fonts)
