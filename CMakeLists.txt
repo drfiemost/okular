@@ -43,7 +43,6 @@ if(BUILD_COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -lgcov")
 endif()
 
-add_subdirectory( active )
 add_subdirectory( ui )
 add_subdirectory( shell )
 add_subdirectory( generators )
