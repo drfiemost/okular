@@ -1215,8 +1215,8 @@ QRect PresentationWidget::routeMouseDrawingEvent( QMouseEvent * e )
 
     if ( hasclicked && !isInside ) {
         // Fake a move to the last border pos
-        nX = qBound(0., nX, 1.);
-        nY = qBound(0., nY, 1.);
+        nX = std::clamp(nX, 0., 1.);
+        nY = std::clamp(nY, 0., 1.);
         m_drawingEngine->event( AnnotatorEngine::Move, button, nX, nY, geom.width(), geom.height(), page );
 
         // Fake a release in the following lines
