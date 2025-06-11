@@ -352,7 +352,7 @@ MHexpand(struct pagenode *pn, drawfunc df)
     int RunLength;		/* Length of current run */
     t16bits *sp;		/* pointer into compressed data */
     pixnum *pa;			/* pointer into new line */
-    int EOLcnt;			/* number of consecutive EOLs */
+    [[maybe_unused]] int EOLcnt;			/* number of consecutive EOLs */
     int	LineNum;		/* line number */
     pixnum *runs;		/* list of run lengths */
     struct tabent *TabEnt;
@@ -612,7 +612,7 @@ g4expand(struct pagenode *pn, drawfunc df)
     t32bits BitAcc;		/* bit accumulator */
     int BitsAvail;		/* # valid bits in BitAcc */
     int	LineNum;		/* line number */
-    int EOLcnt;
+    [[maybe_unused]] int EOLcnt;
     struct tabent *TabEnt;
 
     sp = pn->data;
