@@ -32,9 +32,6 @@ macro_log_feature(ZLIB_FOUND "ZLib" "The Zlib compression library" "http://www.z
 macro_optional_find_package(EPub)
 macro_log_feature(EPUB_FOUND "libepub" "A library for reading EPub documents" "http://sourceforge.net/projects/ebook-tools" FALSE "" "Support for EPub documents in Okular.")
 
-macro_optional_find_package(QMobipocket)
-macro_log_feature(QMOBIPOCKET_FOUND "libqmobipocket" "A library for reading Mobipocket documents" "https://projects.kde.org/projects/kde/kdegraphics/kdegraphics-mobipocket" FALSE "" "Support for Mobipocket documents in Okular.")
-
 # let's enable the generators properly configured
 
 if(POPPLER_QT4_FOUND)
@@ -82,7 +79,3 @@ if(EPUB_FOUND)
 endif(EPUB_FOUND)
 
 add_subdirectory(txt)
-
-if(QMOBIPOCKET_FOUND)
-  add_subdirectory(mobipocket)
-endif()
