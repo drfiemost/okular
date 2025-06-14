@@ -20,18 +20,16 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_SOURCE_DIR}/cmake/modules)
 macro_optional_find_package(QImageBlitz)
 macro_log_feature(QIMAGEBLITZ_FOUND "QImageBlitz" "An image effects library" "http://sourceforge.net/projects/qimageblitz" TRUE "kdesupport" "Required to build Okular.")
 
-macro_optional_find_package(LibKScreen)
-macro_log_feature(LibKScreen_FOUND "LibKScreen" "KDE screen management library" "https://projects.kde.org/projects/kdereview/libkscreen" FALSE "1.0.2" "DPI detection support")
-
 find_package(ZLIB REQUIRED)
 
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+add_definitions(-DKDE_NO_DEPRECATED)
+
 include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}
    ${KDE4_INCLUDES}
    ${QIMAGEBLITZ_INCLUDES}
-   ${LibKScreen_INCLUDE_DIR}
    ${ZLIB_INCLUDE_DIR}
    core/synctex
 )
@@ -172,10 +170,6 @@ IF(APPLE)
 ENDIF(APPLE)
 
 target_link_libraries(okularcore  ${OKULAR_IOKIT} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBRARY} ${KDE4_KJSAPI_LIBRARY} ${MATH_LIB} ${KDE4_THREADWEAVER_LIBRARY} ${ZLIB_LIBRARIES} )
-
-if(LibKScreen_FOUND)
-    target_link_libraries(okularcore ${LibKScreen_LIBRARY})
-endif(LibKScreen_FOUND)
 
 set_target_properties(okularcore PROPERTIES VERSION 7.0.0 SOVERSION 7 )
 

@@ -20,11 +20,6 @@
 #include <QIODevice>
 
 #ifdef Q_WS_X11
-  #include "config-okular.h"
-  #if HAVE_LIBKSCREEN
-   #include <kscreen/config.h>
-   #include <kscreen/edid.h>
-  #endif
   #include <QX11Info>
 #endif
 
@@ -98,78 +93,8 @@ double Utils::realDpiY()
     }
 }
 
-QSizeF Utils::realDpi(QWidget* widgetOnScreen)
+QSizeF Utils::realDpi(QWidget*)
 {
-    if (widgetOnScreen)
-    {
-        // Firstly try to retrieve DPI via LibKScreen
-#if HAVE_LIBKSCREEN
-        KScreen::Config* config = KScreen::Config::current();
-        if (config) {
-            KScreen::OutputList outputs = config->outputs();
-            QPoint globalPos = widgetOnScreen->parentWidget() ?
-                        widgetOnScreen->mapToGlobal(widgetOnScreen->pos()):
-                        widgetOnScreen->pos();
-            QRect widgetRect(globalPos, widgetOnScreen->size());
-
-            KScreen::Output* selectedOutput = 0;
-            int maxArea = 0;
-            Q_FOREACH(KScreen::Output *output, outputs)
-            {
-                if (output->currentMode())
-                {
-                    QRect outputRect(output->pos(),output->currentMode()->size());
-                    QRect intersection = outputRect.intersected(widgetRect);
-                    int area = intersection.width()*intersection.height();
-                    if (area > maxArea)
-                    {
-                        maxArea = area;
-                        selectedOutput = output;
-                    }
-                }
-            }
-
-            if (selectedOutput)
-            {
-                kDebug() << "Found widget at output #" << selectedOutput->id();
-                QRect outputRect(selectedOutput->pos(),selectedOutput->currentMode()->size());
-                QSize szMM = selectedOutput->sizeMm();
-                kDebug() << "Output size is (mm) " << szMM;
-                kDebug() << "Output rect is " << outputRect;
-                if (selectedOutput->edid()) {
-                    kDebug() << "EDID WxH (cm): " << selectedOutput->edid()->width()  << 'x' << selectedOutput->edid()->height();
-                }
-                if (szMM.width() > 0 && szMM.height() > 0 && outputRect.width() > 0 && outputRect.height() > 0
-                    && selectedOutput->edid()
-                    && std::abs(static_cast<int>(selectedOutput->edid()->width()*10) - szMM.width()) < 10
-                    && std::abs(static_cast<int>(selectedOutput->edid()->height()*10) - szMM.height()) < 10)
-                {
-                    // sizes in EDID seem to be consistent
-                    QSizeF res(static_cast<qreal>(outputRect.width())*25.4/szMM.width(),
-                              static_cast<qreal>(outputRect.height())*25.4/szMM.height());
-                    if (!selectedOutput->isHorizontal())
-                    {
-                        kDebug() << "Output is vertical, transposing DPI rect";
-                        res.transpose();
-                    }
-                    if (std::abs(res.width() - res.height()) / std::min(res.height(), res.width()) < 0.05) {
-                        return res;
-                    } else {
-                        kDebug() << "KScreen calculation returned a non square dpi." << res << ". Falling back";
-                    }
-                }
-            }
-            else
-            {
-                kDebug() << "Didn't find a KScreen selectedOutput to calculate DPI. Falling back";
-            }
-        }
-        else
-        {
-            kDebug() << "Didn't find a KScreen config to calculate DPI. Falling back";
-        }
-#endif
-    }
     // this is also fallback for LibKScreen branch if KScreen::Output
     // for particular widget was not found
     QSizeF res = QSizeF(realDpiX(), realDpiY());
