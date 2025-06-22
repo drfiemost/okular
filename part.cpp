@@ -58,9 +58,6 @@
 #include <kicon.h>
 #include <kfilterdev.h>
 #include <kfilterbase.h>
-#if 0
-#include <knewstuff2/engine.h>
-#endif
 #include <kdeprintdialog.h>
 #include <kprintpreview.h>
 #include <kbookmarkmenu.h>
@@ -818,14 +815,6 @@ void Part::setupActions()
     importPS->setText(i18n("&Import PostScript as PDF..."));
     importPS->setIcon(KIcon("document-import"));
     connect(importPS, SIGNAL(triggered()), this, SLOT(slotImportPSFile()));
-#if 0
-    QAction * ghns = ac->addAction("get_new_stuff");
-    ghns->setText(i18n("&Get Books From Internet..."));
-    ghns->setIcon(KIcon("get-hot-new-stuff"));
-    connect(ghns, SIGNAL(triggered()), this, SLOT(slotGetNewStuff()));
-    // TEMP, REMOVE ME!
-    ghns->setShortcut( Qt::Key_G );
-#endif
 
     KToggleAction *blackscreenAction = new KToggleAction( i18n( "Switch Blackscreen Mode" ), ac );
     ac->addAction( "switch_blackscreen_mode", blackscreenAction );
@@ -2330,18 +2319,6 @@ void Part::slotSaveCopyAs()
 
         delete tempFile;
     }
-}
-
-
-void Part::slotGetNewStuff()
-{
-#if 0
-    KNS::Engine engine(widget());
-    engine.init( "okular.knsrc" );
-    // show the modal dialog over pageview and execute it
-    KNS::Entry::List entries = engine.downloadDialogModal( m_pageView );
-    Q_UNUSED( entries )
-#endif
 }
 
 
