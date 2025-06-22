@@ -8,9 +8,10 @@ macro_log_feature(POPPLER_QT4_FOUND "Poppler-Qt4" "A PDF rendering library" "htt
 macro_optional_find_package(LibSpectre)
 macro_log_feature(LIBSPECTRE_FOUND "libspectre" "A PostScript rendering library" "http://libspectre.freedesktop.org/wiki/" FALSE "${LIBSPECTRE_MINIMUM_VERSION}" "Support for PS files in okular.")
 
-set(FPHSA_NAME_MISMATCHED TRUE)
-macro_optional_find_package(Kexiv2)
-macro_log_feature(KEXIV2_FOUND "LibKExiv2" "Wrapper around Exiv2 library" "http://www.digikam.org/sharedlibs" FALSE "" "Support for image files")
+find_package(Exiv2 0.21)
+set_package_properties(Exiv2 PROPERTIES DESCRIPTION "Image Tag reader"
+                       URL "http://www.exiv2.org" TYPE OPTIONAL
+                       PURPOSE "Support image files in okular.")
 
 macro_optional_find_package(CHM)
 macro_log_feature(CHM_FOUND "CHM" "A library for dealing with Microsoft ITSS/CHM format files" "http://www.jedrea.com/chmlib" FALSE "" "Support CHM files in okular.")
@@ -37,9 +38,9 @@ if(LIBSPECTRE_FOUND)
   add_subdirectory(spectre)
 endif(LIBSPECTRE_FOUND)
 
-if(KEXIV2_FOUND)
+if(EXIV2_FOUND)
   add_subdirectory( kimgio )
-endif(KEXIV2_FOUND)
+endif(EXIV2_FOUND)
 
 if(CHM_FOUND)
   add_subdirectory( chm )

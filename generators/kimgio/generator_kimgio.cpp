@@ -23,9 +23,15 @@
 #include <kimageio.h>
 #include <klocale.h>
 
-#include <libkexiv2/kexiv2.h>
+#include <exiv2/exiv2.hpp>
 
 #include <core/page.h>
+
+#if EXIV2_TEST_VERSION(0, 28, 0)
+    using imgPtr = Exiv2::Image::UniquePtr;
+#else
+    using imgPtr = Exiv2::Image::AutoPtr img;
+#endif
 
 static KAboutData createAboutData()
 {
@@ -73,6 +79,57 @@ KIMGIOGenerator::~KIMGIOGenerator()
 {
 }
 
+QImage imageRotate(const imgPtr& eimg, const QImage& qimg)
+{
+    if ( !eimg )
+        return qimg;
+
+    const Exiv2::ExifData& data = eimg->exifData();
+    Exiv2::ExifData::const_iterator it = data.findKey(Exiv2::ExifKey("Exif.Image.Orientation"));
+    int64_t orientation = 0;
+    if (it != data.end()) {
+        orientation = it->toInt64();
+    }
+    QMatrix m;
+    QImage res_img;
+    switch (orientation) {
+    case 2: // HFLIP
+        m.scale(-1.0,1.0);
+        res_img = qimg.transformed(m);
+        break;
+    case 3: // ROT_180
+        m.rotate(180);
+        res_img = qimg.transformed(m);
+        break;
+    case 4: // VFLIP
+        m.scale(1.0,-1.0);
+        res_img = qimg.transformed(m);
+        break;
+    case 5: // ROT_90_HFLIP
+        m.rotate(90);
+        m.scale(-1.0,1.0);
+        res_img = qimg.transformed(m);
+        break;
+    case 6: // ROT_90
+        m.rotate(90);
+        res_img = qimg.transformed(m);
+        break;
+    case 7: // ROT_90_VFLIP
+        m.rotate(90);
+        m.scale(1.0,-1.0);
+        res_img = qimg.transformed(m);
+        break;
+    case 8: // ROT_270
+        m.rotate(270);
+        res_img = qimg.transformed(m);
+        break;
+    default:
+        res_img = qimg;
+        break;
+    }
+    return res_img;
+}
+
 bool KIMGIOGenerator::loadDocument( const QString & fileName, QVector<Okular::Page*> & pagesVector )
 {
     const QString mime = KMimeType::findByFileContent(fileName)->name();
@@ -86,10 +143,8 @@ bool KIMGIOGenerator::loadDocument( const QString & fileName, QVector<Okular::Pa
     docInfo.set( Okular::DocumentInfo::MimeType, mime );
 
     // Apply transformations dictated by Exif metadata
-    KExiv2Iface::KExiv2 exifMetadata;
-    if ( exifMetadata.load( fileName ) ) {
-        exifMetadata.rotateExifQImage( m_img, exifMetadata.getImageOrientation() );
-    }
+    imgPtr img = Exiv2::ImageFactory::open(fileName.toStdString());
+    m_img = imageRotate(img, m_img);
 
     pagesVector.resize( 1 );
 
@@ -104,7 +159,7 @@ bool KIMGIOGenerator::loadDocumentFromData( const QByteArray & fileData, QVector
     const QString mime = KMimeType::findByContent(fileData)->name();
     const QStringList types = KImageIO::typeForMime(mime);
     const QByteArray type = !types.isEmpty() ? types[0].toAscii() : QByteArray();
-    
+
     QBuffer buffer;
     buffer.setData( fileData );
     buffer.open( QIODevice::ReadOnly );
@@ -116,11 +171,8 @@ bool KIMGIOGenerator::loadDocumentFromData( const QByteArray & fileData, QVector
     }
     docInfo.set( Okular::DocumentInfo::MimeType, mime );
 
-    // Apply transformations dictated by Exif metadata
-    KExiv2Iface::KExiv2 exifMetadata;
-    if ( exifMetadata.loadFromData( fileData ) ) {
-        exifMetadata.rotateExifQImage( m_img, exifMetadata.getImageOrientation() );
-    }
+    imgPtr img = Exiv2::ImageFactory::open(fileData.data(), fileData.size());
+    m_img = imageRotate(img, m_img);
 
     pagesVector.resize( 1 );
 

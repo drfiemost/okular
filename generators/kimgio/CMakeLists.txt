@@ -2,17 +2,19 @@ include_directories(
    ${CMAKE_CURRENT_SOURCE_DIR}/../..
    ${CMAKE_BINARY_DIR}
    ${QIMAGEBLITZ_INCLUDES}
-   ${KEXIV2_INCLUDE_DIR}
+   ${EXIV2_INCLUDE_DIR}
 )
-
 
 ########### next target ###############
 
 set(okularGenerator_kimgio_PART_SRCS generator_kimgio.cpp )
 
+set_source_files_properties(generator_kimgio.cpp PROPERTIESMore actions
+                               COMPILE_FLAGS "${KDE4_ENABLE_EXCEPTIONS}")
+
 
 kde4_add_plugin(okularGenerator_kimgio ${okularGenerator_kimgio_PART_SRCS})
-target_link_libraries(okularGenerator_kimgio okularcore ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} Qt4::QtXml ${KEXIV2_LIBRARIES} )
+target_link_libraries(okularGenerator_kimgio okularcore ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS} Qt4::QtXml ${EXIV2_LIBRARIES} )
 install(TARGETS okularGenerator_kimgio DESTINATION ${PLUGIN_INSTALL_DIR})
 
 set( kimgiotest_SRCS tests/kimgiotest.cpp ${CMAKE_SOURCE_DIR}/ui/pagepainter.cpp ${CMAKE_SOURCE_DIR}/ui/guiutils.cpp )
