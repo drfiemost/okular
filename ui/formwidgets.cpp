@@ -67,6 +67,10 @@ FormWidgetsController::FormWidgetsController( Okular::Document *doc )
              this, SIGNAL( canUndoChanged( bool ) ) );
     connect( doc, SIGNAL( canRedoChanged( bool ) ),
              this, SIGNAL( canRedoChanged( bool ) ) );
+
+    // Connect the generic formWidget refresh signal
+    connect( doc, SIGNAL( refreshFormWidget( Okular::FormField * ) ),
+             this, SIGNAL( refreshFormWidget( Okular::FormField * ) ) );
 }
 
 FormWidgetsController::~FormWidgetsController()
@@ -256,7 +260,7 @@ FormWidgetIface * FormWidgetFactory::createWidget( Okular::FormField * ff, QWidg
 
 
 FormWidgetIface::FormWidgetIface( QWidget * w, Okular::FormField * ff )
-    : m_controller( 0 ), m_widget( w ), m_ff( ff ), m_pageItem( 0 )
+    : m_controller( nullptr ), m_ff( ff ), m_widget( w ), m_pageItem( nullptr )
 {
 }
 
@@ -323,14 +327,14 @@ QAbstractButton* FormWidgetIface::button()
 
 
 PushButtonEdit::PushButtonEdit( Okular::FormFieldButton * button, QWidget * parent )
-    : QPushButton( parent ), FormWidgetIface( this, button ), m_form( button )
+    : QPushButton( parent ), FormWidgetIface( this, button )
 {
-    setText( m_form->caption() );
-    setEnabled( !m_form->isReadOnly() );
-    setVisible( m_form->isVisible() );
+    setText( button->caption() );
+    setEnabled( !button->isReadOnly() );
+    setVisible( button->isVisible() );
     setCursor( Qt::ArrowCursor );
 
-    if ( !m_form->isReadOnly() )
+    if ( !button->isReadOnly() )
     {
         connect( this, SIGNAL(clicked()), this, SLOT(slotClicked()) );
     }
@@ -338,26 +342,27 @@ PushButtonEdit::PushButtonEdit( Okular::FormFieldButton * button, QWidget * pare
 
 void PushButtonEdit::slotClicked()
 {
-    if ( m_form->activationAction() )
-        m_controller->signalAction( m_form->activationAction() );
+    if ( m_ff->activationAction() )
+        m_controller->signalAction( m_ff->activationAction() );
 }
 
 
 CheckBoxEdit::CheckBoxEdit( Okular::FormFieldButton * button, QWidget * parent )
-    : QCheckBox( parent ), FormWidgetIface( this, button ), m_form( button )
+    : QCheckBox( parent ), FormWidgetIface( this, button )
 {
-    setText( m_form->caption() );
-    setEnabled( !m_form->isReadOnly() );
+    setText( button->caption() );
+    setEnabled( !button->isReadOnly() );
 
-    setVisible( m_form->isVisible() );
+    setVisible( button->isVisible() );
     setCursor( Qt::ArrowCursor );
 }
 
 void CheckBoxEdit::setFormWidgetsController( FormWidgetsController *controller )
 {
+    Okular::FormFieldButton *form = static_cast<Okular::FormFieldButton *>(m_ff);
     FormWidgetIface::setFormWidgetsController( controller );
-    m_controller->registerRadioButton( button(), m_form );
-    setChecked( m_form->state() );
+    m_controller->registerRadioButton( button(), form );
+    setChecked( form->state() );
     connect( this, SIGNAL(stateChanged(int)), this, SLOT(slotStateChanged(int)) );
 }
 
@@ -368,26 +373,27 @@ QAbstractButton* CheckBoxEdit::button()
 
 void CheckBoxEdit::slotStateChanged( int state )
 {
-    if ( state == Qt::Checked && m_form->activationAction() )
-        m_controller->signalAction( m_form->activationAction() );
+    if ( state == Qt::Checked && m_ff->activationAction() )
+        m_controller->signalAction( m_ff->activationAction() );
 }
 
 
 RadioButtonEdit::RadioButtonEdit( Okular::FormFieldButton * button, QWidget * parent )
-    : QRadioButton( parent ), FormWidgetIface( this, button ), m_form( button )
+    : QRadioButton( parent ), FormWidgetIface( this, button )
 {
-    setText( m_form->caption() );
-    setEnabled( !m_form->isReadOnly() );
+    setText( button->caption() );
+    setEnabled( !button->isReadOnly() );
 
-    setVisible( m_form->isVisible() );
+    setVisible( button->isVisible() );
     setCursor( Qt::ArrowCursor );
 }
 
 void RadioButtonEdit::setFormWidgetsController( FormWidgetsController *controller )
 {
+    Okular::FormFieldButton *form = static_cast<Okular::FormFieldButton *>(m_ff);
     FormWidgetIface::setFormWidgetsController( controller );
-    m_controller->registerRadioButton( button(), m_form );
-    setChecked( m_form->state() );
+    m_controller->registerRadioButton( button(), form );
+    setChecked( form->state() );
 }
 
 QAbstractButton* RadioButtonEdit::button()
@@ -396,26 +402,26 @@ QAbstractButton* RadioButtonEdit::button()
 }
 
 FormLineEdit::FormLineEdit( Okular::FormFieldText * text, QWidget * parent )
-    : QLineEdit( parent ), FormWidgetIface( this, text ), m_form( text )
+    : QLineEdit( parent ), FormWidgetIface( this, text )
 {
-    int maxlen = m_form->maximumLength();
+    int maxlen = text->maximumLength();
     if ( maxlen >= 0 )
         setMaxLength( maxlen );
-    setAlignment( m_form->textAlignment() );
-    setText( m_form->text() );
-    if ( m_form->isPassword() )
+    setAlignment( text->textAlignment() );
+    setText( text->text() );
+    if ( text->isPassword() )
         setEchoMode( QLineEdit::Password );
-    setReadOnly( m_form->isReadOnly() );
+    setReadOnly( text->isReadOnly() );
 
     m_prevCursorPos = cursorPosition();
     m_prevAnchorPos = cursorPosition();
 
-    if ( !m_form->isReadOnly() )
+    if ( !text->isReadOnly() )
     {
         connect( this, SIGNAL( textEdited( QString ) ), this, SLOT( slotChanged() ) );
         connect( this, SIGNAL( cursorPositionChanged( int, int ) ), this, SLOT( slotChanged() ) );
     }
-    setVisible( m_form->isVisible() );
+    setVisible( text->isVisible() );
 }
 
 void FormLineEdit::setFormWidgetsController(FormWidgetsController* controller)
@@ -423,6 +429,8 @@ void FormLineEdit::setFormWidgetsController(FormWidgetsController* controller)
     FormWidgetIface::setFormWidgetsController(controller);
     connect( m_controller, SIGNAL( formTextChangedByUndoRedo( int, Okular::FormFieldText*, QString, int, int ) ),
              this, SLOT( slotHandleTextChangedByUndoRedo( int, Okular::FormFieldText*, QString, int, int ) ) );
+    connect( m_controller, SIGNAL( refreshFormWidget( Okular::FormField * form ) ),
+             this, SLOT( slotRefresh( Okular::FormField* ) ) );
 }
 
 bool FormLineEdit::event( QEvent* e )
@@ -474,12 +482,13 @@ void FormLineEdit::contextMenuEvent( QContextMenuEvent* event )
 
 void FormLineEdit::slotChanged()
 {
+    Okular::FormFieldText *form = static_cast<Okular::FormFieldText *>(m_ff);
     QString contents = text();
     int cursorPos = cursorPosition();
-    if ( contents != m_form->text() )
+    if ( contents != form->text() )
     {
         m_controller->formTextChangedByWidget( pageItem()->pageNumber(),
-                                               m_form,
+                                               form,
                                                contents,
                                                cursorPos,
                                                m_prevCursorPos,
@@ -503,7 +512,7 @@ void FormLineEdit::slotHandleTextChangedByUndoRedo( int,
                                                     int cursorPos,
                                                     int anchorPos )
 {
-    if ( textForm != m_form || contents == text() )
+    if ( textForm != m_ff || contents == text() )
     {
         return;
     }
@@ -517,17 +526,28 @@ void FormLineEdit::slotHandleTextChangedByUndoRedo( int,
     setFocus();
 }
 
-TextAreaEdit::TextAreaEdit( Okular::FormFieldText * text, QWidget * parent )
-: KTextEdit( parent ), FormWidgetIface( this, text ), m_form( text )
+void FormLineEdit::slotRefresh( Okular::FormField *form )
 {
-    setAcceptRichText( m_form->isRichText() );
-    setCheckSpellingEnabled( m_form->canBeSpellChecked() );
-    setAlignment( m_form->textAlignment() );
-    setPlainText( m_form->text() );
-    setReadOnly( m_form->isReadOnly() );
+    if (form != m_ff)
+    {
+        return;
+    }
+    Okular::FormFieldText *text = static_cast<Okular::FormFieldText *> ( form );
+
+    setText( text->text() );
+}
+
+TextAreaEdit::TextAreaEdit( Okular::FormFieldText * text, QWidget * parent )
+: KTextEdit( parent ), FormWidgetIface( this, text )
+{
+    setAcceptRichText( text->isRichText() );
+    setCheckSpellingEnabled( text->canBeSpellChecked() );
+    setAlignment( text->textAlignment() );
+    setPlainText( text->text() );
+    setReadOnly( text->isReadOnly() );
     setUndoRedoEnabled( false );
 
-    if ( !m_form->isReadOnly() )
+    if ( !text->isReadOnly() )
     {
         connect( this, SIGNAL( textChanged() ), this, SLOT( slotChanged() ) );
         connect( this, SIGNAL( cursorPositionChanged() ), this, SLOT( slotChanged() ) );
@@ -536,7 +556,7 @@ TextAreaEdit::TextAreaEdit( Okular::FormFieldText * text, QWidget * parent )
     }
     m_prevCursorPos = textCursor().position();
     m_prevAnchorPos = textCursor().anchor();
-    setVisible( m_form->isVisible() );
+    setVisible( text->isVisible() );
 }
 
 bool TextAreaEdit::event( QEvent* e )
@@ -588,6 +608,8 @@ void TextAreaEdit::setFormWidgetsController( FormWidgetsController* controller )
     FormWidgetIface::setFormWidgetsController( controller );
     connect( m_controller, SIGNAL( formTextChangedByUndoRedo( int, Okular::FormFieldText*, QString, int, int ) ),
              this, SLOT( slotHandleTextChangedByUndoRedo( int, Okular::FormFieldText*, QString, int, int ) ) );
+    connect( m_controller, SIGNAL(refreshFormWidget( Okular::FormField* ) ),
+             this, SLOT( slotRefresh( Okular::FormField* ) ) );
 }
 
 void TextAreaEdit::slotHandleTextChangedByUndoRedo( int,
@@ -596,7 +618,7 @@ void TextAreaEdit::slotHandleTextChangedByUndoRedo( int,
                                                     int cursorPos,
                                                     int anchorPos )
 {
-    if ( textForm != m_form )
+    if ( textForm != m_ff )
     {
         return;
     }
@@ -612,12 +634,13 @@ void TextAreaEdit::slotHandleTextChangedByUndoRedo( int,
 
 void TextAreaEdit::slotChanged()
 {
+    Okular::FormFieldText *form = static_cast<Okular::FormFieldText *>(m_ff);
     QString contents = toPlainText();
     int cursorPos = textCursor().position();
-    if (contents != m_form->text())
+    if (contents != form->text())
     {
         m_controller->formTextChangedByWidget( pageItem()->pageNumber(),
-                                               m_form,
+                                               form,
                                                contents,
                                                cursorPos,
                                                m_prevCursorPos,
@@ -627,25 +650,35 @@ void TextAreaEdit::slotChanged()
     m_prevAnchorPos = textCursor().anchor();
 }
 
+void TextAreaEdit::slotRefresh( Okular::FormField *form )
+{
+    if (form != m_ff)
+    {
+        return;
+    }
+    Okular::FormFieldText *text = static_cast<Okular::FormFieldText *> ( form );
+
+    setPlainText( text->text() );
+}
 
 FileEdit::FileEdit( Okular::FormFieldText * text, QWidget * parent )
-    : KUrlRequester( parent ), FormWidgetIface( this, text ), m_form( text )
+    : KUrlRequester( parent ), FormWidgetIface( this, text )
 {
     setMode( KFile::File | KFile::ExistingOnly | KFile::LocalOnly );
     setFilter( i18n( "*|All Files" ) );
-    setUrl( KUrl( m_form->text() ) );
-    lineEdit()->setAlignment( m_form->textAlignment() );
-    setEnabled( !m_form->isReadOnly() );
+    setUrl( KUrl( text->text() ) );
+    lineEdit()->setAlignment( text->textAlignment() );
+    setEnabled( !text->isReadOnly() );
 
     m_prevCursorPos = lineEdit()->cursorPosition();
     m_prevAnchorPos = lineEdit()->cursorPosition();
 
-    if ( !m_form->isReadOnly() )
+    if ( !text->isReadOnly() )
     {
         connect( this, SIGNAL( textChanged( QString ) ), this, SLOT( slotChanged() ) );
         connect( lineEdit(), SIGNAL( cursorPositionChanged( int, int ) ), this, SLOT( slotChanged() ) );
     }
-    setVisible( m_form->isVisible() );
+    setVisible( text->isVisible() );
 }
 
 void FileEdit::setFormWidgetsController( FormWidgetsController* controller )
@@ -712,12 +745,14 @@ void FileEdit::slotChanged()
     if ( text() != url().toLocalFile() )
         this->setText( url().toLocalFile() );
 
+    Okular::FormFieldText *form = static_cast<Okular::FormFieldText *>(m_ff);
+
     QString contents = text();
     int cursorPos = lineEdit()->cursorPosition();
-    if (contents != m_form->text())
+    if (contents != form->text())
     {
         m_controller->formTextChangedByWidget( pageItem()->pageNumber(),
-                                               m_form,
+                                               form,
                                                contents,
                                                cursorPos,
                                                m_prevCursorPos,
@@ -741,7 +776,7 @@ void FileEdit::slotHandleFileChangedByUndoRedo( int,
                                                 int cursorPos,
                                                 int anchorPos )
 {
-    if ( form != m_form || contents == text() )
+    if ( form != m_ff || contents == text() )
     {
         return;
     }
@@ -756,13 +791,13 @@ void FileEdit::slotHandleFileChangedByUndoRedo( int,
 }
 
 ListEdit::ListEdit( Okular::FormFieldChoice * choice, QWidget * parent )
-    : QListWidget( parent ), FormWidgetIface( this, choice ), m_form( choice )
+    : QListWidget( parent ), FormWidgetIface( this, choice )
 {
-    addItems( m_form->choices() );
-    setSelectionMode( m_form->multiSelect() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::SingleSelection );
+    addItems( choice->choices() );
+    setSelectionMode( choice->multiSelect() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::SingleSelection );
     setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    QList< int > selectedItems = m_form->currentChoices();
-    if ( m_form->multiSelect() )
+    QList< int > selectedItems = choice->currentChoices();
+    if ( choice->multiSelect() )
     {
         foreach ( int index, selectedItems )
             if ( index >= 0 && index < count() )
@@ -776,13 +811,13 @@ ListEdit::ListEdit( Okular::FormFieldChoice * choice, QWidget * parent )
             scrollToItem( item( selectedItems.at(0) ) );
         }
     }
-    setEnabled( !m_form->isReadOnly() );
+    setEnabled( !choice->isReadOnly() );
 
-    if ( !m_form->isReadOnly() )
+    if ( !choice->isReadOnly() )
     {
         connect( this, SIGNAL(itemSelectionChanged()), this, SLOT(slotSelectionChanged()) );
     }
-    setVisible( m_form->isVisible() );
+    setVisible( choice->isVisible() );
     setCursor( Qt::ArrowCursor );
 }
 
@@ -797,12 +832,13 @@ void ListEdit::slotSelectionChanged()
 {
     QList< QListWidgetItem * > selection = selectedItems();
     QList< int > rows;
-    foreach( const QListWidgetItem * item, selection )
+    for( const QListWidgetItem * item: selection )
         rows.append( row( item ) );
 
-    if ( rows != m_form->currentChoices() ) {
+    Okular::FormFieldChoice *form = static_cast<Okular::FormFieldChoice *>(m_ff);
+    if ( rows != form->currentChoices() ) {
         m_controller->formListChangedByWidget( pageItem()->pageNumber(),
-                                               m_form,
+                                               form,
                                                rows );
     }
 }
@@ -811,7 +847,7 @@ void ListEdit::slotHandleFormListChangedByUndoRedo( int,
                                                     Okular::FormFieldChoice* listForm,
                                                     const QList< int > & choices )
 {
-    if ( m_form != listForm ) {
+    if ( m_ff != listForm ) {
         return;
     }
 
@@ -826,28 +862,28 @@ void ListEdit::slotHandleFormListChangedByUndoRedo( int,
 }
 
 ComboEdit::ComboEdit( Okular::FormFieldChoice * choice, QWidget * parent )
-    : QComboBox( parent ), FormWidgetIface( this, choice ), m_form( choice )
+    : QComboBox( parent ), FormWidgetIface( this, choice )
 {
-    addItems( m_form->choices() );
+    addItems( choice->choices() );
     setEditable( true );
     setInsertPolicy( NoInsert );
-    lineEdit()->setReadOnly( !m_form->isEditable() );
-    QList< int > selectedItems = m_form->currentChoices();
+    lineEdit()->setReadOnly( !choice->isEditable() );
+    QList< int > selectedItems = choice->currentChoices();
     if ( selectedItems.count() == 1 && selectedItems.at(0) >= 0 && selectedItems.at(0) < count() )
         setCurrentIndex( selectedItems.at(0) );
-    setEnabled( !m_form->isReadOnly() );
+    setEnabled( !choice->isReadOnly() );
 
-    if ( m_form->isEditable() && !m_form->editChoice().isEmpty() )
-        lineEdit()->setText( m_form->editChoice() );
+    if ( choice->isEditable() && !choice->editChoice().isEmpty() )
+        lineEdit()->setText( choice->editChoice() );
 
-    if ( !m_form->isReadOnly() )
+    if ( !choice->isReadOnly() )
     {
         connect( this, SIGNAL(currentIndexChanged(int)), this, SLOT(slotValueChanged()) );
         connect( this, SIGNAL(editTextChanged(QString)), this, SLOT(slotValueChanged()) );
         connect( lineEdit(), SIGNAL(cursorPositionChanged(int,int)), this, SLOT(slotValueChanged()) );
     }
 
-    setVisible( m_form->isVisible() );
+    setVisible( choice->isVisible() );
     setCursor( Qt::ArrowCursor );
     m_prevCursorPos = lineEdit()->cursorPosition();
     m_prevAnchorPos = lineEdit()->cursorPosition();
@@ -865,21 +901,23 @@ void ComboEdit::slotValueChanged()
 {
     const QString text = lineEdit()->text();
 
+    Okular::FormFieldChoice *form = static_cast<Okular::FormFieldChoice *>(m_ff);
+
     QString prevText;
-    if ( m_form->currentChoices().isEmpty() )
+    if ( form->currentChoices().isEmpty() )
     {
-        prevText = m_form->editChoice();
+        prevText = form->editChoice();
     }
     else
     {
-        prevText = m_form->choices()[m_form->currentChoices()[0]];
+        prevText = form->choices()[form->currentChoices()[0]];
     }
 
     int cursorPos = lineEdit()->cursorPosition();
     if ( text != prevText )
     {
         m_controller->formComboChangedByWidget( pageItem()->pageNumber(),
-                                                m_form,
+                                                form,
                                                 currentText(),
                                                 cursorPos,
                                                 m_prevCursorPos,
@@ -904,7 +942,7 @@ void ComboEdit::slotHandleFormComboChangedByUndoRedo( int,
                                                       int cursorPos,
                                                       int anchorPos )
 {
-    if ( m_form != form ) {
+    if ( m_ff != form ) {
         return;
     }
 

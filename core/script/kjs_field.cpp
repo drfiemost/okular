@@ -172,6 +172,9 @@ static void fieldSetValue( KJSContext *context, void *object, KJSObject value )
                 {
                     Document *doc = PagePrivate::get( page )->m_doc->m_parent;
                     QMetaObject::invokeMethod( doc, "refreshPixmaps", Qt::QueuedConnection, Q_ARG( int, page->number() ) );
+                    // FIXME replace when signals become public
+                    //emit doc->refreshFormWidget( field );
+                    doc->emitRefreshFormWidget(field);
                 }
                 else
                 {

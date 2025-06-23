@@ -45,6 +45,7 @@ class DocumentViewport;
 class EmbeddedFile;
 class ExportFormat;
 class FontInfo;
+class FormField;
 class FormFieldText;
 class FormFieldButton;
 class FormFieldChoice;
@@ -850,6 +851,9 @@ class OKULAR_EXPORT Document : public QObject
         */
         QAbstractItemModel * layersModel() const;
 
+        // TODO remove
+        void emitRefreshFormWidget(FormField *field) { emit refreshFormWidget( field ); }
+
     public Q_SLOTS:
         /**
          * This slot is called whenever the user changes the @p rotation of
@@ -1099,6 +1103,12 @@ class OKULAR_EXPORT Document : public QObject
          * @since 0.17 (KDE 4.11)
          */
         void formButtonsChangedByUndoRedo( int page, const QList< Okular::FormFieldButton* > & formButtons );
+
+        /**
+         * This signal is emmitted whenever a FormField was changed programatically and the
+         * according widget should be updated.
+         */
+        void refreshFormWidget( Okular::FormField *field );
     private:
         /// @cond PRIVATE
         friend class DocumentPrivate;

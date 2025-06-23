@@ -110,6 +110,8 @@ class FormWidgetsController : public QObject
 
         void action( Okular::Action *action );
 
+        void refreshFormWidget( Okular::FormField * form );
+
     private slots:
         void slotButtonClicked( QAbstractButton *button );
         void slotFormButtonsChangedByUndoRedo( int pageNumber,
@@ -157,10 +159,10 @@ class FormWidgetIface
 
     protected:
         FormWidgetsController * m_controller;
+        Okular::FormField * m_ff;
 
     private:
         QWidget * m_widget;
-        Okular::FormField * m_ff;
         PageViewItem * m_pageItem;
 };
 
@@ -174,9 +176,6 @@ class PushButtonEdit : public QPushButton, public FormWidgetIface
 
     private slots:
         void slotClicked();
-
-    private:
-        Okular::FormFieldButton * m_form;
 };
 
 class CheckBoxEdit : public QCheckBox, public FormWidgetIface
@@ -192,9 +191,6 @@ class CheckBoxEdit : public QCheckBox, public FormWidgetIface
 
     private slots:
         void slotStateChanged( int state );
-
-    private:
-        Okular::FormFieldButton * m_form;
 };
 
 class RadioButtonEdit : public QRadioButton, public FormWidgetIface
@@ -207,9 +203,6 @@ class RadioButtonEdit : public QRadioButton, public FormWidgetIface
         // reimplemented from FormWidgetIface
         void setFormWidgetsController( FormWidgetsController *controller );
         QAbstractButton* button();
-
-    private:
-        Okular::FormFieldButton * m_form;
 };
 
 class FormLineEdit : public QLineEdit, public FormWidgetIface
@@ -231,9 +224,9 @@ class FormLineEdit : public QLineEdit, public FormWidgetIface
                                               int anchorPos );
     private slots:
         void slotChanged();
+        void slotRefresh(Okular::FormField* form);
 
     private:
-        Okular::FormFieldText * m_form;
         int m_prevCursorPos;
         int m_prevAnchorPos;
 };
@@ -258,9 +251,9 @@ class TextAreaEdit : public KTextEdit, public FormWidgetIface
 
     private slots:
         void slotChanged();
+        void slotRefresh(Okular::FormField* form);
 
     private:
-        Okular::FormFieldText * m_form;
         int m_prevCursorPos;
         int m_prevAnchorPos;
 };
@@ -286,7 +279,6 @@ class FileEdit : public KUrlRequester, public FormWidgetIface
                                               int cursorPos,
                                               int anchorPos );
     private:
-        Okular::FormFieldText * m_form;
         int m_prevCursorPos;
         int m_prevAnchorPos;
 };
@@ -305,9 +297,6 @@ class ListEdit : public QListWidget, public FormWidgetIface
         void slotHandleFormListChangedByUndoRedo( int pageNumber,
                                                   Okular::FormFieldChoice * listForm,
                                                   const QList< int > & choices );
-
-    private:
-        Okular::FormFieldChoice * m_form;
 };
 
 
@@ -331,7 +320,6 @@ class ComboEdit : public QComboBox, public FormWidgetIface
                                                  );
 
     private:
-        Okular::FormFieldChoice * m_form;
         int m_prevCursorPos;
         int m_prevAnchorPos;
 };
