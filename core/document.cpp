@@ -42,7 +42,6 @@
 #include <kcomponentdata.h>
 #include <kconfigdialog.h>
 #include <kdebug.h>
-#include <klibloader.h>
 #include <klocale.h>
 #include <kmacroexpander.h>
 #include <kmessagebox.h>
