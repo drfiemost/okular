@@ -57,9 +57,17 @@ bool FormField::isReadOnly() const
     return false;
 }
 
+void FormField::setReadOnly( bool )
+{
+}
+
 bool FormField::isVisible() const
 {
     return true;
+}
+
+void FormField::setVisible( bool )
+{
 }
 
 Action* FormField::activationAction() const

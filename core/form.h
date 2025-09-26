@@ -87,9 +87,19 @@ class OKULAR_EXPORT FormField
         virtual bool isReadOnly() const;
 
         /**
+         * Whether the field is read-only.
+         */
+        virtual void setReadOnly( bool value );
+
+        /**
          * Whether this form field is visible.
          */
         virtual bool isVisible() const;
+
+        /**
+         * Whether the field is visible.
+         */
+        virtual void setVisible( bool value );
 
         Action* activationAction() const;
 

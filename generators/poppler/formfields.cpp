@@ -58,9 +58,27 @@ bool PopplerFormFieldButton::isReadOnly() const
     return m_field->isReadOnly();
 }
 
+void PopplerFormFieldButton::setReadOnly( bool value )
+{
+#ifdef HAVE_POPPLER_0_64
+    m_field->setReadOnly( value );
+#else
+    Q_UNUSED( value );
+#endif
+}
+
 bool PopplerFormFieldButton::isVisible() const
 {
     return m_field->isVisible();
+}
+
+void PopplerFormFieldButton::setVisible( bool value )
+{
+#ifdef HAVE_POPPLER_0_64
+    m_field->setVisible( value );
+#else
+    Q_UNUSED( value );
+#endif
 }
 
 Okular::FormFieldButton::ButtonType PopplerFormFieldButton::buttonType() const
@@ -139,9 +157,27 @@ bool PopplerFormFieldText::isReadOnly() const
     return m_field->isReadOnly();
 }
 
+void PopplerFormFieldText::setReadOnly( bool value )
+{
+#ifdef HAVE_POPPLER_0_64
+    m_field->setReadOnly( value );
+#else
+    Q_UNUSED( value );
+#endif
+}
+
 bool PopplerFormFieldText::isVisible() const
 {
     return m_field->isVisible();
+}
+
+void PopplerFormFieldText::setVisible( bool value )
+{
+#ifdef HAVE_POPPLER_0_64
+    m_field->setVisible( value );
+#else
+    Q_UNUSED( value );
+#endif
 }
 
 Okular::FormFieldText::TextType PopplerFormFieldText::textType() const
@@ -235,9 +271,27 @@ bool PopplerFormFieldChoice::isReadOnly() const
     return m_field->isReadOnly();
 }
 
+void PopplerFormFieldChoice::setReadOnly( bool value )
+{
+#ifdef HAVE_POPPLER_0_64
+    m_field->setReadOnly( value );
+#else
+    Q_UNUSED( value );
+#endif
+}
+
 bool PopplerFormFieldChoice::isVisible() const
 {
     return m_field->isVisible();
+}
+
+void PopplerFormFieldChoice::setVisible( bool value )
+{
+#ifdef HAVE_POPPLER_0_64
+    m_field->setVisible( value );
+#else
+    Q_UNUSED( value );
+#endif
 }
 
 Okular::FormFieldChoice::ChoiceType PopplerFormFieldChoice::choiceType() const

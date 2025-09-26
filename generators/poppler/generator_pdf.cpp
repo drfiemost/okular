@@ -304,7 +304,7 @@ QPair<Okular::Movie*, Okular::EmbeddedFile*> createMovieFromPopplerRichMedia( co
  */
 Okular::Action* createLinkFromPopplerLink(const Poppler::Link *popplerLink)
 {
-    Okular::Action *link = 0;
+    Okular::Action *link = nullptr;
     const Poppler::LinkGoto *popplerLinkGoto;
     const Poppler::LinkExecute *popplerLinkExecute;
     const Poppler::LinkBrowse *popplerLinkBrowse;
@@ -442,6 +442,19 @@ Okular::Action* createLinkFromPopplerLink(const Poppler::Link *popplerLink)
             deletePopplerLink = false;
 #endif
         break;
+#ifdef HAVE_POPPLER_0_64
+        case Poppler::Link::Hide:
+        {
+            const Poppler::LinkHide * l = static_cast<const Poppler::LinkHide *>( popplerLink );
+            QStringList scripts;
+            for ( const QString &target: l->targets() )
+            {
+                scripts << QStringLiteral( "getField(\"%1\").hidden = %2;" ).arg( target ).arg( l->isShowAction() ? QLatin1String( "false" ) : QLatin1String( "true" ) );
+            }
+            link = new Okular::ScriptAction( Okular::JavaScript, scripts.join( QLatin1Char( '\n' ) ) );
+        }
+        break;
+#endif
     }
 
     if ( deletePopplerLink )

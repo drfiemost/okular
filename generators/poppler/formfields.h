@@ -20,12 +20,14 @@ class PopplerFormFieldButton : public Okular::FormFieldButton
         virtual ~PopplerFormFieldButton();
 
         // inherited from Okular::FormField
-        virtual Okular::NormalizedRect rect() const;
-        virtual int id() const;
-        virtual QString name() const;
-        virtual QString uiName() const;
-        virtual bool isReadOnly() const;
-        virtual bool isVisible() const;
+        Okular::NormalizedRect rect() const override;
+        int id() const override;
+        QString name() const override;
+        QString uiName() const override;
+        bool isReadOnly() const override;
+        void setReadOnly( bool value ) override;
+        bool isVisible() const override;
+        void setVisible( bool value ) override;
 
         // inherited from Okular::FormFieldButton
         virtual ButtonType buttonType() const;
@@ -47,12 +49,14 @@ class PopplerFormFieldText : public Okular::FormFieldText
         virtual ~PopplerFormFieldText();
 
         // inherited from Okular::FormField
-        virtual Okular::NormalizedRect rect() const;
-        virtual int id() const;
-        virtual QString name() const;
-        virtual QString uiName() const;
-        virtual bool isReadOnly() const;
-        virtual bool isVisible() const;
+        Okular::NormalizedRect rect() const override;
+        int id() const override;
+        QString name() const override;
+        QString uiName() const override;
+        bool isReadOnly() const override;
+        void setReadOnly( bool value ) override;
+        bool isVisible() const override;
+        void setVisible( bool value ) override;
 
         // inherited from Okular::FormFieldText
         virtual Okular::FormFieldText::TextType textType() const;
@@ -77,12 +81,14 @@ class PopplerFormFieldChoice : public Okular::FormFieldChoice
         virtual ~PopplerFormFieldChoice();
 
         // inherited from Okular::FormField
-        virtual Okular::NormalizedRect rect() const;
-        virtual int id() const;
-        virtual QString name() const;
-        virtual QString uiName() const;
-        virtual bool isReadOnly() const;
-        virtual bool isVisible() const;
+        Okular::NormalizedRect rect() const override;
+        int id() const override;
+        QString name() const override;
+        QString uiName() const override;
+        bool isReadOnly() const override;
+        void setReadOnly( bool value ) override;
+        bool isVisible() const override;
+        void setVisible( bool value ) override;
 
         // inherited from Okular::FormFieldChoice
         virtual ChoiceType choiceType() const;
