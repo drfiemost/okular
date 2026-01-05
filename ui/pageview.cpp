@@ -3627,7 +3627,7 @@ void PageView::updateSelection( const QPoint & pos )
         d->mouseSelectionRect.setBottomLeft( pos );
         updateRect |= d->mouseSelectionRect;
         updateRect.translate( -contentAreaPosition() );
-        viewport()->update( updateRect.adjusted( -1, -1, 1, 1 ) );
+        viewport()->update( updateRect.adjusted( -1, -2, 2, 1 ) );
     }
     else if ( d->mouseTextSelecting)
     {
@@ -3705,7 +3705,7 @@ Okular::RegularAreaRect * PageView::textSelectionForItem( PageViewItem * item, c
 
 void PageView::selectionClear(const ClearMode mode)
 {
-    QRect updatedRect = d->mouseSelectionRect.normalized().adjusted( 0, 0, 1, 1 );
+    QRect updatedRect = d->mouseSelectionRect.normalized().adjusted( -2, -2, 2, 2 );
     d->mouseSelecting = false;
     d->mouseSelectionRect.setCoords( 0, 0, 0, 0 );
     d->tableSelectionCols.clear();
